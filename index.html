@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Julien Mayer - DevSecOps Engineer</title>
+    <title>Julien Mayer - DevOps Engineer</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,68 +13,81 @@
 <body>
     <div class="container">
         <header>
+            <div class="language-toggle">
+                <button id="toggleLanguage" onclick="toggleLanguage()">
+                    <span class="lang-en">🇫🇷 FR</span>
+                    <span class="lang-fr">🇬🇧 EN</span>
+                </button>
+            </div>
             <div class="profile-container">
                 <div class="profile-image">
                     <img src="profile.jpg" alt="Julien Mayer">
                 </div>
             </div>
             <h1>Julien Mayer</h1>
-            <p>DevSecOps Engineer</p>
+            <p>DevOps Engineer</p>
             <div class="contact-info">
                 <a href="#"><i class="fas fa-map-marker-alt"></i> 1, rue du coignet 22100 Dinan, France</a>
                 <a href="mailto:mayer.julien22@gmail.com"><i class="fas fa-envelope"></i> mayer.julien22@gmail.com</a>
                 <a href="tel:+33783531926"><i class="fas fa-phone"></i> +33 783 531 926</a>
-                <a href="https://github.com/h4ckm1n" target="_blank"><i class="fab fa-github"></i> GitHub</a>
-                <a href="https://linkedin.com/in/julien-mayer-22" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                <a href="https://github.com/h4ckm1n-dev" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+                <a href="https://www.linkedin.com/in/julien-mayer-32850b75/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
             </div>
         </header>
 
         <section id="summary">
-            <h2>Professional Summary</h2>
-            <p>DevSecOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevSecOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies.</p>
+            <h2 data-en="Professional Summary" data-fr="Résumé Professionnel">Professional Summary</h2>
+            <p data-en="DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies." 
+               data-fr="Ingénieur DevOps avec une forte expertise en automatisation, sécurité et gestion d'infrastructures cloud-native. Maîtrise de Docker, Kubernetes, ArgoCD, CI/CD, outils de surveillance (Grafana, Loki) et de sécurité (Trivy, Kyverno). Passionné par l'optimisation des workflows DevOps et l'implémentation des meilleures pratiques DevOps pour garantir des déploiements efficaces et sécurisés. Professionnel autodidacte avec un parcours prouvé d'apprentissage continu et d'implémentation de technologies de pointe.">DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies.</p>
         </section>
 
         <section id="experience">
-            <h2>Work Experience</h2>
+            <h2 data-en="Work Experience" data-fr="Expérience Professionnelle">Work Experience</h2>
             <div class="job">
-                <h3>DevSecOps Engineer – Onepoint</h3>
-                <p><strong><i class="far fa-calendar-alt"></i> Jan 2024 - Oct 2024</strong> | <i class="fas fa-map-marker-alt"></i> Rennes, France</p>
+                <h3 data-en="DevOps Engineer – Onepoint" data-fr="Ingénieur DevOps – Onepoint">DevOps Engineer – Onepoint</h3>
+                <p><strong><i class="far fa-calendar-alt"></i> <span data-en="Jan 2024 - Oct 2024" data-fr="Jan 2024 - Oct 2024">Jan 2024 - Oct 2024</span></strong> | <i class="fas fa-map-marker-alt"></i> <span data-en="Rennes, France" data-fr="Rennes, France">Rennes, France</span></p>
                 <ul>
-                    <li>Automated infrastructure provisioning and CI/CD workflows using Bash scripting, improving deployment time by 40%.</li>
-                    <li>Integrated ArgoCD with GitOps for Kubernetes deployments, improving reliability and enabling seamless rollbacks.</li>
-                    <li>Deployed monitoring solutions (Grafana, Loki) for comprehensive system and application observability.</li>
-                    <li>Automated dependency updates with Renovate to ensure regular component upgrades and patch management.</li>
-                    <li>Secured Docker images using Trivy, developing an automated security report in Python.</li>
-                    <li>Implemented Kyverno for enforcing security policies in Kubernetes clusters, ensuring compliance with organizational security standards.</li>
+                    <li data-en="Automated infrastructure provisioning and CI/CD workflows using Bash scripting, improving deployment time by 40%." data-fr="Automatisation du provisionnement d'infrastructure et des workflows CI/CD à l'aide de scripts Bash, améliorant le temps de déploiement de 40%.">Automated infrastructure provisioning and CI/CD workflows using Bash scripting, improving deployment time by 40%.</li>
+                    <li data-en="Integrated ArgoCD with GitOps for Kubernetes deployments, improving reliability and enabling seamless rollbacks." data-fr="Intégration d'ArgoCD avec GitOps pour les déploiements Kubernetes, améliorant la fiabilité et permettant des rollbacks transparents.">Integrated ArgoCD with GitOps for Kubernetes deployments, improving reliability and enabling seamless rollbacks.</li>
+                    <li data-en="Deployed monitoring solutions (Grafana, Loki) for comprehensive system and application observability." data-fr="Déploiement de solutions de surveillance (Grafana, Loki) pour une observabilité complète des systèmes et applications.">Deployed monitoring solutions (Grafana, Loki) for comprehensive system and application observability.</li>
+                    <li data-en="Automated dependency updates with Renovate to ensure regular component upgrades and patch management." data-fr="Automatisation des mises à jour de dépendances avec Renovate pour assurer des mises à niveau régulières des composants et la gestion des correctifs.">Automated dependency updates with Renovate to ensure regular component upgrades and patch management.</li>
+                    <li data-en="Secured Docker images using Trivy, developing an automated security report in Python." data-fr="Sécurisation des images Docker à l'aide de Trivy, développement d'un rapport de sécurité automatisé en Python.">Secured Docker images using Trivy, developing an automated security report in Python.</li>
+                    <li data-en="Implemented Kyverno for enforcing security policies in Kubernetes clusters, ensuring compliance with organizational security standards." data-fr="Implémentation de Kyverno pour appliquer des politiques de sécurité dans les clusters Kubernetes, garantissant la conformité aux normes de sécurité organisationnelles.">Implemented Kyverno for enforcing security policies in Kubernetes clusters, ensuring compliance with organizational security standards.</li>
                 </ul>
             </div>
             <div class="job">
-                <h3>Network Operations Center Engineer – Inetum</h3>
-                <p><strong><i class="far fa-calendar-alt"></i> Nov 2022 - Nov 2023</strong> | <i class="fas fa-map-marker-alt"></i> Rennes, France</p>
+                <h3 data-en="Network Operations Center Engineer – Inetum" data-fr="Ingénieur Centre d'Opérations Réseau – Inetum">Network Operations Center Engineer – Inetum</h3>
+                <p><strong><i class="far fa-calendar-alt"></i> <span data-en="Nov 2022 - Nov 2023" data-fr="Nov 2022 - Nov 2023">Nov 2022 - Nov 2023</span></strong> | <i class="fas fa-map-marker-alt"></i> <span data-en="Rennes, France" data-fr="Rennes, France">Rennes, France</span></p>
                 <ul>
-                    <li>Managed daily operations of critical infrastructure, ensuring 99.9% platform reliability.</li>
-                    <li>Administered Linux systems, Docker containers, and Kubernetes clusters.</li>
-                    <li>Automated processes with Ansible and optimized workflows using Bash/Python scripting.</li>
-                    <li>Implemented monitoring solutions using Grafana and Prometheus to improve system observability.</li>
-                    <li>Collaborated with cross-functional teams to troubleshoot and resolve infrastructure issues.</li>
+                    <li data-en="Managed daily operations of critical infrastructure, ensuring 99.9% platform reliability." data-fr="Gestion des opérations quotidiennes d'infrastructures critiques, assurant une fiabilité de 99,9% de la plateforme.">Managed daily operations of critical infrastructure, ensuring 99.9% platform reliability.</li>
+                    <li data-en="Administered Linux systems, Docker containers, and Kubernetes clusters." data-fr="Administration de systèmes Linux, conteneurs Docker et clusters Kubernetes.">Administered Linux systems, Docker containers, and Kubernetes clusters.</li>
+                    <li data-en="Automated processes with Ansible and optimized workflows using Bash/Python scripting." data-fr="Automatisation des processus avec Ansible et optimisation des workflows à l'aide de scripts Bash/Python.">Automated processes with Ansible and optimized workflows using Bash/Python scripting.</li>
+                    <li data-en="Implemented monitoring solutions using Grafana and Prometheus to improve system observability." data-fr="Implémentation de solutions de surveillance à l'aide de Grafana et Prometheus pour améliorer l'observabilité du système.">Implemented monitoring solutions using Grafana and Prometheus to improve system observability.</li>
+                    <li data-en="Collaborated with cross-functional teams to troubleshoot and resolve infrastructure issues." data-fr="Collaboration avec des équipes interfonctionnelles pour identifier et résoudre les problèmes d'infrastructure.">Collaborated with cross-functional teams to troubleshoot and resolve infrastructure issues.</li>
                 </ul>
             </div>
             <div class="job">
-                <h3>System Administrator & Technician – Info Pro Services</h3>
-                <p><strong><i class="far fa-calendar-alt"></i> 2011 - 2015</strong> | <i class="fas fa-map-marker-alt"></i> Dinan, France</p>
+                <h3 data-en="System Administrator & Technician – Info Pro Services" data-fr="Administrateur Système & Technicien – Info Pro Services">System Administrator & Technician – Info Pro Services</h3>
+                <p><strong><i class="far fa-calendar-alt"></i> <span data-en="2011 - 2015" data-fr="2011 - 2015">2011 - 2015</span></strong> | <i class="fas fa-map-marker-alt"></i> <span data-en="Dinan, France" data-fr="Dinan, France">Dinan, France</span></p>
                 <ul>
-                    <li>Provided remote troubleshooting and maintenance for Windows/Linux servers.</li>
-                    <li>Configured and managed networks, backups, and system migrations.</li>
-                    <li>Trained users and maintained technical documentation for efficient troubleshooting.</li>
+                    <li data-en="Managed an IT infrastructure of over 200 client workstations (Windows 7/8) and 15 servers (Windows Server 2008/2012)." data-fr="Gestion d'une infrastructure informatique de plus de 200 postes clients (Windows 7/8) et 15 serveurs (Windows Server 2008/2012).">Managed an IT infrastructure of over 200 client workstations (Windows 7/8) and 15 servers (Windows Server 2008/2012).</li>
+                    <li data-en="Administered Active Directory, Group Policies (GPO), and access rights for 5 client companies." data-fr="Administration d'Active Directory, des stratégies de groupe (GPO) et des droits d'accès pour 5 entreprises clientes.">Administered Active Directory, Group Policies (GPO), and access rights for 5 client companies.</li>
+                    <li data-en="Configured and maintained email solutions (Exchange Server) and file sharing services (Windows File Server)." data-fr="Configuration et maintenance des solutions de messagerie (Exchange Server) et des services de partage de fichiers (Windows File Server).">Configured and maintained email solutions (Exchange Server) and file sharing services (Windows File Server).</li>
+                    <li data-en="Implemented and managed backup and disaster recovery solutions (Veeam Backup, Acronis)." data-fr="Implémentation et gestion des solutions de sauvegarde et de reprise après sinistre (Veeam Backup, Acronis).">Implemented and managed backup and disaster recovery solutions (Veeam Backup, Acronis).</li>
+                    <li data-en="Ensured infrastructure monitoring with tools such as PRTG Network Monitor and Nagios." data-fr="Surveillance de l'infrastructure avec des outils tels que PRTG Network Monitor et Nagios.">Ensured infrastructure monitoring with tools such as PRTG Network Monitor and Nagios.</li>
+                    <li data-en="Deployed virtualization solutions (Hyper-V, VMware) to optimize server resources." data-fr="Déploiement de solutions de virtualisation (Hyper-V, VMware) pour optimiser les ressources serveur.">Deployed virtualization solutions (Hyper-V, VMware) to optimize server resources.</li>
+                    <li data-en="Performed Windows domain migrations and operating system upgrades." data-fr="Réalisation de migrations de domaines Windows et de mises à niveau de systèmes d'exploitation.">Performed Windows domain migrations and operating system upgrades.</li>
+                    <li data-en="Installed and configured network equipment (routers, firewalls, switches) to ensure secure connectivity." data-fr="Installation et configuration d'équipements réseau (routeurs, pare-feux, commutateurs) pour assurer une connectivité sécurisée.">Installed and configured network equipment (routers, firewalls, switches) to ensure secure connectivity.</li>
+                    <li data-en="Trained users and documented technical procedures to facilitate troubleshooting." data-fr="Formation des utilisateurs et documentation des procédures techniques pour faciliter la résolution des problèmes.">Trained users and documented technical procedures to facilitate troubleshooting.</li>
                 </ul>
             </div>
         </section>
 
         <section id="skills">
-            <h2>Technical Skills</h2>
+            <h2 data-en="Technical Skills" data-fr="Compétences Techniques">Technical Skills</h2>
             <div class="skills-container">
                 <div class="skill-category">
-                    <h3><i class="fas fa-cube"></i> Containers & Orchestration</h3>
+                    <h3 data-en="Containers & Orchestration" data-fr="Conteneurs & Orchestration"><i class="fas fa-cube"></i> Containers & Orchestration</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Docker</span>
                         <span class="skill-tag">Kubernetes</span>
@@ -83,7 +96,7 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-code-branch"></i> CI/CD & Automation</h3>
+                    <h3 data-en="CI/CD & Automation" data-fr="CI/CD & Automatisation"><i class="fas fa-code-branch"></i> CI/CD & Automation</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">GitLab CI</span>
                         <span class="skill-tag">Ansible</span>
@@ -93,17 +106,17 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-shield-alt"></i> Security</h3>
+                    <h3 data-en="Security" data-fr="Sécurité"><i class="fas fa-shield-alt"></i> Security</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Trivy</span>
                         <span class="skill-tag">Kyverno</span>
                         <span class="skill-tag">SAST/DAST</span>
                         <span class="skill-tag">OPA</span>
-                        <span class="skill-tag">Gestion des vulnérabilités</span>
+                        <span class="skill-tag" data-en="Vulnerability Management" data-fr="Gestion des Vulnérabilités">Vulnerability Management</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-chart-line"></i> Monitoring & Logs</h3>
+                    <h3 data-en="Monitoring & Logs" data-fr="Surveillance & Logs"><i class="fas fa-chart-line"></i> Monitoring & Logs</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Grafana</span>
                         <span class="skill-tag">Loki</span>
@@ -112,7 +125,7 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-cloud"></i> Cloud & Infrastructure</h3>
+                    <h3 data-en="Cloud & Infrastructure" data-fr="Cloud & Infrastructure"><i class="fas fa-cloud"></i> Cloud & Infrastructure</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Linux</span>
                         <span class="skill-tag">Terraform</span>
@@ -122,7 +135,7 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3><i class="fas fa-code-branch"></i> Gestion de versions & Déploiements</h3>
+                    <h3 data-en="Version Control & Deployments" data-fr="Gestion de Versions & Déploiements"><i class="fas fa-code-branch"></i> Version Control & Deployments</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">GitOps</span>
                         <span class="skill-tag">Renovate</span>
@@ -133,58 +146,76 @@
         </section>
 
         <section id="soft-skills">
-            <h2>Soft Skills</h2>
+            <h2 data-en="Soft Skills" data-fr="Compétences Personnelles">Soft Skills</h2>
             <div class="skills-container">
                 <div class="skill-tags soft-skills-tags">
-                    <span class="skill-tag"><i class="fas fa-bolt"></i> Resilience</span>
-                    <span class="skill-tag"><i class="fas fa-comments"></i> Communication</span>
-                    <span class="skill-tag"><i class="fas fa-lightbulb"></i> Proactivity</span>
-                    <span class="skill-tag"><i class="fas fa-puzzle-piece"></i> Problem-solving</span>
+                    <span class="skill-tag" data-en="Resilience" data-fr="Résilience"><i class="fas fa-bolt"></i> Resilience</span>
+                    <span class="skill-tag" data-en="Communication" data-fr="Communication"><i class="fas fa-comments"></i> Communication</span>
+                    <span class="skill-tag" data-en="Proactivity" data-fr="Proactivité"><i class="fas fa-lightbulb"></i> Proactivity</span>
+                    <span class="skill-tag" data-en="Problem-solving" data-fr="Résolution de problèmes"><i class="fas fa-puzzle-piece"></i> Problem-solving</span>
                 </div>
             </div>
         </section>
 
         <section id="languages">
-            <h2>Languages</h2>
+            <h2 data-en="Languages" data-fr="Langues">Languages</h2>
             <div class="skills-container">
                 <div class="skill-tags language-tags">
-                    <span class="skill-tag"><i class="fas fa-flag"></i> French (Native)</span>
-                    <span class="skill-tag"><i class="fas fa-globe"></i> English (Fluent)</span>
+                    <span class="skill-tag" data-en="French (Native)" data-fr="Français (Langue maternelle)"><i class="fas fa-flag"></i> French (Native)</span>
+                    <span class="skill-tag" data-en="English (Fluent)" data-fr="Anglais (Courant)"><i class="fas fa-globe"></i> English (Fluent)</span>
                 </div>
             </div>
         </section>
 
         <section id="projects">
-            <h2>Personal Projects</h2>
+            <h2 data-en="Personal Projects" data-fr="Projets Personnels">Personal Projects</h2>
             <div class="job">
-                <h3>Kubernetes Security Scanner</h3>
-                <p>A custom tool built with Python and OPA to scan Kubernetes manifests for security misconfigurations.</p>
-                <p><a href="https://github.com/h4ckm1n/k8s-security-scanner" target="_blank"><i class="fab fa-github"></i> View on GitHub</a></p>
-            </div>
-            <div class="job">
-                <h3>GitOps Infrastructure Template</h3>
-                <p>A complete template for deploying applications using GitOps principles with ArgoCD and Kustomize.</p>
-                <p><a href="https://github.com/h4ckm1n/gitops-infra-template" target="_blank"><i class="fab fa-github"></i> View on GitHub</a></p>
-            </div>
-            <div class="job">
-                <h3>nvim-ollama</h3>
-                <p>Un plugin Neovim pour intégrer Ollama, permettant d'utiliser des modèles d'IA locaux directement dans l'éditeur.</p>
-                <p><a href="https://github.com/h4ckm1n-dev/nvim-ollama" target="_blank"><i class="fab fa-github"></i> View on GitHub</a></p>
-            </div>
-            <div class="job">
-                <h3>SLIP (Security Linux Infrastructure Project)</h3>
-                <p>Un projet d'infrastructure Linux sécurisée, axé sur les meilleures pratiques de sécurité pour les environnements DevOps.</p>
-                <p><a href="https://github.com/h4ckm1n-dev/SLIP" target="_blank"><i class="fab fa-github"></i> View on GitHub</a></p>
+                <h3>kube-utils-nvim</h3>
+                <p data-en="A specialized Neovim plugin for managing and interacting with Kubernetes clusters directly from the editor, optimizing daily DevOps workflow." data-fr="Un plugin Neovim spécialisé permettant de gérer et d'interagir avec des clusters Kubernetes directement depuis l'éditeur, optimisant le workflow DevOps quotidien.">A specialized Neovim plugin for managing and interacting with Kubernetes clusters directly from the editor, optimizing daily DevOps workflow.</p>
+                <p><a href="https://github.com/h4ckm1n-dev/kube-utils-nvim" target="_blank"><i class="fab fa-github"></i> <span data-en="View on GitHub" data-fr="Voir sur GitHub">View on GitHub</span></a></p>
             </div>
         </section>
 
         <footer>
             <div class="social-links">
-                <a href="https://github.com/h4ckm1n" target="_blank"><i class="fab fa-github fa-2x"></i></a>
-                <a href="https://linkedin.com/in/julien-mayer-22" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
+                <a href="https://github.com/h4ckm1n-dev" target="_blank"><i class="fab fa-github fa-2x"></i></a>
+                <a href="https://www.linkedin.com/in/julien-mayer-32850b75/" target="_blank"><i class="fab fa-linkedin fa-2x"></i></a>
             </div>
-            <p>&copy; 2025 Julien Mayer. All rights reserved.</p>
+            <p data-en="&copy; 2025 Julien Mayer. All rights reserved." data-fr="&copy; 2025 Julien Mayer. Tous droits réservés.">&copy; 2025 Julien Mayer. All rights reserved.</p>
         </footer>
     </div>
+
+    <script>
+        // Language switching functionality
+        let currentLanguage = 'en';
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'fr' : 'en';
+            document.documentElement.setAttribute('lang', currentLanguage);
+            updateContent();
+        }
+
+        function updateContent() {
+            // Update all elements with data-en and data-fr attributes
+            const elementsToTranslate = document.querySelectorAll('[data-' + currentLanguage + ']');
+            
+            elementsToTranslate.forEach(element => {
+                element.textContent = element.getAttribute('data-' + currentLanguage);
+            });
+
+            // Show/hide language toggle button text
+            document.querySelectorAll('.lang-en, .lang-fr').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.querySelector('.lang-' + currentLanguage).style.display = 'inline-block';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.lang-fr').forEach(el => {
+                el.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
