@@ -1770,7 +1770,27 @@ LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
                 console.log("Opening terminal...");
                 try {
                     terminalOverlay.classList.remove('hidden');
-                    terminalInput.focus();
+                    
+                    // Détection des appareils mobiles
+                    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                    
+                    // Ne pas mettre le focus automatiquement sur l'input sur mobile
+                    if (!isMobile) {
+                        terminalInput.focus();
+                    } else {
+                        // Ajouter une indication visuelle pour les mobiles
+                        const inputLine = document.getElementById('terminal-input-line');
+                        inputLine.classList.add('tap-to-type');
+                        
+                        // Ajouter un message pour mobile
+                        const tapHint = document.createElement('div');
+                        tapHint.className = 'tap-hint';
+                        tapHint.innerHTML = '<i class="fas fa-hand-pointer"></i> Tap here to type';
+                        if (currentLanguage === 'fr') {
+                            tapHint.innerHTML = '<i class="fas fa-hand-pointer"></i> Appuyez ici pour écrire';
+                        }
+                        inputLine.appendChild(tapHint);
+                    }
                     
                     // Welcome message with typing effect
                     printToTerminal(`<div class="typing-effect"><span style="color: #8ae234;">Welcome to Julien Mayer's interactive CV terminal!</span></div>
@@ -1788,6 +1808,20 @@ Type <span style="color: #729fcf;">help</span> to see available commands. Press 
                     tabHint.className = 'tab-hint';
                     tabHint.innerHTML = 'Press <span class="badge badge-info">Tab</span>';
                     document.getElementById('terminal-input-line').appendChild(tabHint);
+                }
+            });
+            
+            // Ajouter un gestionnaire d'événements pour le clic sur la ligne de prompt
+            document.getElementById('terminal-input-line').addEventListener('click', function() {
+                terminalInput.focus();
+                
+                // Enlever la classe d'indication visuelle une fois que l'utilisateur a cliqué
+                this.classList.remove('tap-to-type');
+                
+                // Supprimer l'indication après le clic
+                const tapHint = this.querySelector('.tap-hint');
+                if (tapHint) {
+                    tapHint.remove();
                 }
             });
             

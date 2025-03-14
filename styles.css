@@ -902,4 +902,77 @@ section:hover {
     #terminal-output::-webkit-scrollbar {
         width: 6px;
     }
+}
+
+/* Styles for mobile tap-to-type indication */
+.tap-to-type {
+    position: relative;
+    animation: pulse 1.5s infinite;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+@keyframes pulse {
+    0% { background-color: rgba(255, 255, 255, 0.05); }
+    50% { background-color: rgba(255, 255, 255, 0.1); }
+    100% { background-color: rgba(255, 255, 255, 0.05); }
+}
+
+.tap-hint {
+    position: absolute;
+    right: 15px;
+    bottom: 35px;
+    background-color: rgba(99, 102, 241, 0.2);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+    animation: fadeInDown 0.5s;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+.tap-hint i {
+    margin-right: 5px;
+    animation: tapPulse 1s infinite;
+}
+
+@keyframes tapPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajustements supplémentaires pour les appareils mobiles */
+@media (max-width: 576px) {
+    .tap-hint {
+        bottom: 30px;
+        font-size: 0.75rem;
+        padding: 3px 8px;
+    }
+    
+    #terminal-input-line.tap-to-type {
+        padding: 12px;
+        margin-top: 5px;
+    }
+}
+
+@media (max-width: 375px) {
+    .tap-hint {
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        right: 10px;
+    }
 } 
