@@ -4,19 +4,454 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Julien Mayer - DevOps Engineer</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Terminal Modern Styling */
+        #terminal-overlay {
+            backdrop-filter: blur(5px);
+        }
+        
+        #terminal-container {
+            background-color: #1e1e2e;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: terminal-appear 0.3s ease-out;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+        
+        #terminal-header {
+            background: linear-gradient(to right, #2b2b40, #1e1e2e);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        #terminal-header span {
+            color: #cdd6f4;
+            font-weight: 600;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        #closeTerminal {
+            background: none;
+            border: none;
+            color: #cdd6f4;
+            opacity: 0.7;
+            transition: opacity 0.2s, transform 0.2s;
+            border-radius: 50%;
+        }
+        
+        #closeTerminal:hover {
+            opacity: 1;
+            transform: scale(1.1);
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        #terminal-output {
+            color: #cdd6f4;
+            line-height: 1.5;
+        }
+        
+        #terminal-output::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #terminal-output::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        #terminal-output::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+        
+        #terminal-output::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.25);
+        }
+        
+        #terminal-input-line {
+            background-color: #1e1e2e;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .prompt {
+            color: #a6e3a1;
+            font-weight: bold;
+        }
+        
+        #terminal-input {
+            background: transparent;
+            border: none;
+            color: #cdd6f4;
+            font-family: inherit;
+            outline: none;
+            caret-color: #f5c2e7;
+        }
+        
+        /* Terminal Color Scheme */
+        .success {
+            color: #a6e3a1;
+            font-weight: 500;
+        }
+        
+        .error {
+            color: #f38ba8;
+            font-weight: 500;
+        }
+        
+        .warning {
+            color: #f9e2af;
+            font-weight: 500;
+        }
+        
+        .info {
+            color: #89b4fa;
+            font-weight: 500;
+        }
+        
+        /* Terminal Button Styling */
+        .terminal-button-prominent {
+            background: linear-gradient(135deg, #2b2b40, #1e1e2e);
+            color: #cdd6f4;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .terminal-button-prominent:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+            background: linear-gradient(135deg, #313151, #2a2a46);
+        }
+        
+        .terminal-button-prominent:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .terminal-button-prominent .fas {
+            color: #a6e3a1;
+        }
+        
+        .terminal-button-prominent::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            opacity: 0;
+            transform: scale(0.5);
+            transition: transform 0.3s, opacity 0.3s;
+        }
+        
+        .terminal-button-prominent:hover::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Terminal Suggestions */
+        #terminal-suggestions {
+            padding: 8px 12px;
+            color: #9399b2;
+            background-color: rgba(30, 30, 46, 0.8);
+            border-radius: 6px;
+            margin-top: 5px;
+        }
+
+        #terminal-output div.suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        #terminal-output div.suggestions span {
+            padding: 3px 8px;
+            background: rgba(137, 180, 250, 0.2);
+            border-radius: 4px;
+            color: #cdd6f4;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        #terminal-output div.suggestions span:hover {
+            background: rgba(137, 180, 250, 0.3);
+        }
+        
+        /* Animations */
+        @keyframes terminal-appear {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Content Styling */
+        #terminal-output pre {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+            border-left: 3px solid #89b4fa;
+            margin: 5px 0;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+        
+        #terminal-output div {
+            position: relative;
+            animation: fade-slide-in 0.2s ease-out;
+        }
+        
+        @keyframes fade-slide-in {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Content Boxes */
+        .content-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+            border-left: 3px solid #89b4fa;
+        }
+        
+        .command-section {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 12px 0 8px;
+            color: #f5c2e7;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Progress Bar for Scan and Deploy */
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a6e3a1, #89b4fa);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+            animation: progress-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes progress-pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        /* Snake Game */
+        #snake-game {
+            width: 100%;
+            max-width: 800px;
+            margin: 15px auto;
+            padding: 15px;
+            background-color: #181825;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Style JSON output */
+        #terminal-output div:contains("{") {
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            white-space: pre-wrap;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 5px 0;
+            border-left: 3px solid #fab387;
+        }
+        
+        /* Style for file types in ls command */
+        .file-json {
+            color: #fab387;
+            font-weight: 500;
+        }
+        
+        .file-json::before {
+            content: "󰘦 ";
+            font-family: "Font Awesome 6 Free";
+        }
+        
+        .file-txt {
+            color: #a6e3a1;
+            font-weight: 500;
+        }
+        
+        .file-txt::before {
+            content: "󰈙 ";
+            font-family: "Font Awesome 6 Free";
+        }
+        
+        .file-dir {
+            color: #89b4fa;
+            font-weight: 500;
+        }
+        
+        .file-dir::before {
+            content: "󰉋 ";
+            font-family: "Font Awesome 6 Free";
+        }
+        
+        /* Badge styles */
+        .badge {
+            display: inline-block;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        
+        .badge-info {
+            background-color: rgba(137, 180, 250, 0.2);
+            color: #89b4fa;
+        }
+        
+        .badge-success {
+            background-color: rgba(166, 227, 161, 0.2);
+            color: #a6e3a1;
+        }
+        
+        .badge-warning {
+            background-color: rgba(249, 226, 175, 0.2);
+            color: #f9e2af;
+        }
+        
+        .badge-error {
+            background-color: rgba(243, 139, 168, 0.2);
+            color: #f38ba8;
+        }
+        
+        /* Typing effect */
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+        
+        .typing-effect {
+            display: inline-block;
+            overflow: hidden;
+            border-right: 0.15em solid #f5c2e7;
+            white-space: nowrap;
+            animation: 
+                typing 1.5s steps(30, end),
+                blink-caret .75s step-end infinite;
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #f5c2e7 }
+        }
+        
+        /* Tab hint for autocompletion */
+        .tab-hint {
+            position: absolute;
+            right: 15px;
+            bottom: 12px;
+            font-size: 0.8rem;
+            color: rgba(205, 214, 244, 0.5);
+            pointer-events: none;
+        }
+        
+        /* Blinking cursor */
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 16px;
+            background-color: #f5c2e7;
+            animation: cursor-blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 2px;
+        }
+        
+        /* Progress bar styling for deploy and scan commands */
+        .progress-bar {
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #a6e3a1, #89b4fa);
+            border-radius: 4px;
+            width: 0%;
+            transition: width 0.5s ease;
+            animation: progress-pulse 1.5s ease-in-out infinite;
+        }
+        
+        @keyframes progress-pulse {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+        
+        /* Command section title */
+        .command-section {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 12px 0 8px;
+            color: #f5c2e7;
+            padding-bottom: 5px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Box for content group */
+        .content-box {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+            border-left: 3px solid #89b4fa;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="language-toggle">
                 <button id="toggleLanguage" onclick="toggleLanguage()">
-                    <span class="lang-en">🇫🇷 FR</span>
-                    <span class="lang-fr">🇬🇧 EN</span>
+                    <span class="lang-en">🇫🇷 Passer en Français</span>
+                    <span class="lang-fr">🇬🇧 Switch to English</span>
                 </button>
             </div>
             <div class="profile-container">
@@ -248,57 +683,481 @@
             // Additional CSS for terminal size
             const style = document.createElement('style');
             style.textContent = `
+                /* Terminal Main Styles */
+                #terminal-overlay {
+                    background-color: rgba(0, 0, 0, 0.85);
+                    backdrop-filter: blur(5px);
+                    transition: all 0.3s ease;
+                }
+                
                 #terminal-container {
                     width: 85% !important;
                     height: 80% !important;
                     max-width: 1200px !important;
-                }
-                #terminal-output {
-                    height: calc(100% - 70px) !important;
-                }
-                #snake-game {
-                    width: 100% !important;
-                    max-width: 800px !important;
-                    margin: 0 auto !important;
+                    background-color: #1e1e2e;
+                    border-radius: 12px;
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                    overflow: hidden;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    animation: terminal-appear 0.3s ease-out;
+                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
                 }
                 
-                /* Terminal suggestions styles */
-                #terminal-suggestions {
-                    padding: 5px;
-                    color: #aaa;
+                #terminal-header {
+                    background: linear-gradient(to right, #2b2b40, #1e1e2e);
+                    padding: 12px 15px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
                 }
+                
+                #terminal-header span {
+                    color: #cdd6f4;
+                    font-weight: 600;
+                    font-size: 0.9rem;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+                }
+                
+                #closeTerminal {
+                    background: none;
+                    border: none;
+                    color: #cdd6f4;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    opacity: 0.7;
+                    transition: opacity 0.2s, transform 0.2s;
+                    border-radius: 50%;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+                
+                #closeTerminal:hover {
+                    opacity: 1;
+                    transform: scale(1.1);
+                    background-color: rgba(255, 255, 255, 0.1);
+                }
+                
+                #terminal-output {
+                    height: calc(100% - 70px) !important;
+                    padding: 15px;
+                    overflow-y: auto;
+                    color: #cdd6f4;
+                    line-height: 1.5;
+                    font-size: 0.95rem;
+                }
+                
+                #terminal-output::-webkit-scrollbar {
+                    width: 8px;
+                }
+                
+                #terminal-output::-webkit-scrollbar-track {
+                    background: rgba(0, 0, 0, 0.2);
+                }
+                
+                #terminal-output::-webkit-scrollbar-thumb {
+                    background: rgba(255, 255, 255, 0.15);
+                    border-radius: 4px;
+                }
+                
+                #terminal-output::-webkit-scrollbar-thumb:hover {
+                    background: rgba(255, 255, 255, 0.25);
+                }
+                
+                #terminal-input-line {
+                    display: flex;
+                    align-items: center;
+                    background-color: #1e1e2e;
+                    padding: 10px 15px;
+                    border-top: 1px solid rgba(255, 255, 255, 0.05);
+                }
+                
+                .prompt {
+                    color: #a6e3a1;
+                    font-weight: bold;
+                    margin-right: 10px;
+                    white-space: nowrap;
+                }
+                
+                #terminal-input {
+                    background: transparent;
+                    border: none;
+                    color: #cdd6f4;
+                    font-size: 0.95rem;
+                    font-family: inherit;
+                    flex: 1;
+                    outline: none;
+                    caret-color: #f5c2e7;
+                }
+                
+                .terminal-spacer {
+                    height: 0.3rem;
+                }
+                
+                /* Terminal Color Scheme */
+                .success {
+                    color: #a6e3a1;
+                    font-weight: 500;
+                }
+                
+                .error {
+                    color: #f38ba8;
+                    font-weight: 500;
+                }
+                
+                .warning {
+                    color: #f9e2af;
+                    font-weight: 500;
+                }
+                
+                .info {
+                    color: #89b4fa;
+                    font-weight: 500;
+                }
+                
+                /* Terminal Suggestions */
+                #terminal-suggestions {
+                    padding: 8px 12px;
+                    color: #9399b2;
+                    background-color: rgba(30, 30, 46, 0.8);
+                    border-radius: 6px;
+                    margin-top: 5px;
+                }
+                
                 #terminal-output div.suggestions {
                     display: flex;
                     flex-wrap: wrap;
-                    gap: 10px;
+                    gap: 8px;
+                    margin-top: 5px;
                 }
+                
                 #terminal-output div.suggestions span {
-                    padding: 2px 5px;
-                    background: rgba(255,255,255,0.1);
-                    border-radius: 3px;
+                    padding: 3px 8px;
+                    background: rgba(137, 180, 250, 0.2);
+                    border-radius: 4px;
+                    color: #cdd6f4;
+                    font-size: 0.9rem;
+                    transition: background 0.2s;
+                }
+                
+                #terminal-output div.suggestions span:hover {
+                    background: rgba(137, 180, 250, 0.3);
+                }
+                
+                /* Terminal Content Styling */
+                #terminal-output a {
+                    color: #89b4fa;
+                    text-decoration: none;
+                }
+                
+                #terminal-output a:hover {
+                    text-decoration: underline;
+                }
+                
+                #terminal-output h1, #terminal-output h2, #terminal-output h3 {
+                    color: #f5c2e7;
+                    margin-top: 1rem;
+                    margin-bottom: 0.5rem;
+                }
+                
+                #terminal-output pre {
+                    background-color: rgba(0, 0, 0, 0.2);
+                    padding: 10px;
+                    border-radius: 6px;
+                    overflow-x: auto;
+                    border-left: 3px solid #89b4fa;
+                }
+                
+                /* Snake Game */
+                #snake-game {
+                    width: 100% !important;
+                    max-width: 800px !important;
+                    margin: 15px auto !important;
+                    padding: 15px !important;
+                    background-color: #181825 !important;
+                    border-radius: 8px !important;
+                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+                }
+                
+                /* Animations */
+                @keyframes terminal-appear {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                
+                @keyframes cursor-blink {
+                    0%, 100% { opacity: 1; }
+                    50% { opacity: 0; }
+                }
+                
+                /* Responsive adjustments */
+                @media (max-width: 768px) {
+                    #terminal-container {
+                        width: 95% !important;
+                        height: 90% !important;
+                    }
+                    
+                    #terminal-header span {
+                        font-size: 0.8rem;
+                    }
+                    
+                    #terminal-output, #terminal-input {
+                        font-size: 0.85rem;
+                    }
+                }
+                
+                /* Style for command prompts */
+                #terminal-output .prompt {
+                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+                    opacity: 0.9;
+                }
+                
+                /* Style for directory and file listings */
+                #terminal-output div:not(:has(span)):not(:has(pre)):not(.terminal-spacer)) {
+                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+                    line-height: 1.6;
+                }
+                
+                /* Style JSON output */
+                #terminal-output div:contains("{") {
+                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+                    white-space: pre-wrap;
+                    background-color: rgba(0, 0, 0, 0.2);
+                    padding: 10px;
+                    border-radius: 6px;
+                    margin: 5px 0;
+                    border-left: 3px solid #fab387;
+                }
+                
+                /* Style for file types in ls command */
+                .file-json {
+                    color: #fab387;
+                    font-weight: 500;
+                }
+                
+                .file-json::before {
+                    content: "󰘦 ";
+                    font-family: "Font Awesome 6 Free";
+                }
+                
+                .file-txt {
+                    color: #a6e3a1;
+                    font-weight: 500;
+                }
+                
+                .file-txt::before {
+                    content: "󰈙 ";
+                    font-family: "Font Awesome 6 Free";
+                }
+                
+                .file-dir {
+                    color: #89b4fa;
+                    font-weight: 500;
+                }
+                
+                .file-dir::before {
+                    content: "󰉋 ";
+                    font-family: "Font Awesome 6 Free";
+                }
+                
+                /* Badge styles */
+                .badge {
+                    display: inline-block;
+                    padding: 3px 6px;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    margin-left: 5px;
+                    vertical-align: middle;
+                }
+                
+                .badge-info {
+                    background-color: rgba(137, 180, 250, 0.2);
+                    color: #89b4fa;
+                }
+                
+                .badge-success {
+                    background-color: rgba(166, 227, 161, 0.2);
+                    color: #a6e3a1;
+                }
+                
+                .badge-warning {
+                    background-color: rgba(249, 226, 175, 0.2);
+                    color: #f9e2af;
+                }
+                
+                .badge-error {
+                    background-color: rgba(243, 139, 168, 0.2);
+                    color: #f38ba8;
+                }
+                
+                /* Typing effect */
+                @keyframes typing {
+                    from { width: 0 }
+                    to { width: 100% }
+                }
+                
+                .typing-effect {
+                    display: inline-block;
+                    overflow: hidden;
+                    border-right: 0.15em solid #f5c2e7;
+                    white-space: nowrap;
+                    animation: 
+                        typing 1.5s steps(30, end),
+                        blink-caret .75s step-end infinite;
+                }
+                
+                @keyframes blink-caret {
+                    from, to { border-color: transparent }
+                    50% { border-color: #f5c2e7 }
+                }
+                
+                /* Tab hint for autocompletion */
+                .tab-hint {
+                    position: absolute;
+                    right: 15px;
+                    bottom: 12px;
+                    font-size: 0.8rem;
+                    color: rgba(205, 214, 244, 0.5);
+                    pointer-events: none;
+                }
+                
+                /* Blinking cursor */
+                .cursor-blink {
+                    display: inline-block;
+                    width: 8px;
+                    height: 16px;
+                    background-color: #f5c2e7;
+                    animation: cursor-blink 1s infinite;
+                    vertical-align: middle;
+                    margin-left: 2px;
+                }
+                
+                /* Progress bar styling for deploy and scan commands */
+                .progress-bar {
+                    height: 8px;
+                    background-color: rgba(255, 255, 255, 0.1);
+                    border-radius: 4px;
+                    margin: 10px 0;
+                    overflow: hidden;
+                }
+                
+                .progress-bar-fill {
+                    height: 100%;
+                    background: linear-gradient(90deg, #a6e3a1, #89b4fa);
+                    border-radius: 4px;
+                    width: 0%;
+                    transition: width 0.5s ease;
+                    animation: progress-pulse 1.5s ease-in-out infinite;
+                }
+                
+                @keyframes progress-pulse {
+                    0% { opacity: 0.8; }
+                    50% { opacity: 1; }
+                    100% { opacity: 0.8; }
+                }
+                
+                /* Command section title */
+                .command-section {
+                    font-size: 1.1rem;
+                    font-weight: 600;
+                    margin: 12px 0 8px;
+                    color: #f5c2e7;
+                    padding-bottom: 5px;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                }
+                
+                /* Box for content group */
+                .content-box {
+                    background-color: rgba(0, 0, 0, 0.2);
+                    border-radius: 6px;
+                    padding: 10px;
+                    margin: 8px 0;
+                    border-left: 3px solid #89b4fa;
                 }
             `;
             document.head.appendChild(style);
+            
+            // Function to print to terminal
+            function printToTerminal(text) {
+                const output = document.createElement('div');
+                output.innerHTML = text;
+                terminalOutput.appendChild(output);
+                
+                // Add spacing
+                const spacer = document.createElement('div');
+                spacer.classList.add('terminal-spacer');
+                terminalOutput.appendChild(spacer);
+                
+                // Scroll to bottom
+                terminalOutput.scrollTop = terminalOutput.scrollHeight;
+            }
             
             // Command history array and current position
             let commandHistory = [];
             let historyPosition = -1;
             
             // Available commands for autocompletion
-            const availableCommands = [
+            // Commandes communes aux deux langues
+            const commonCommands = [
                 'help', 'clear', 'ls', 'cat', 'find', 'whoami', 'scan', 'deploy',
-                'skills', 'competences', 'soft-skills', 'competences-perso', 
-                'languages', 'langues', 'experience', 'projects', 'projets',
-                'contact', 'summary', 'resume', 'fr', 'en', 'exit', 'snake'
+                'exit', 'snake'
             ];
             
-            // Available files for autocompletion
-            const availableFiles = [
-                'experience.json', 'skills.json', 'soft-skills.json', 'languages.json',
-                'projects.json', 'summary.txt', 'contact.txt', 'scan_targets.txt',
-                'competences.json', 'competences-perso.json', 'langues.json', 
-                'projets.json', 'resume.txt', 'cibles_scan.txt', 'deployments/'
+            // Commandes spécifiques à l'anglais
+            const enCommands = [
+                'skills', 'soft-skills', 'languages', 'experience', 'projects',
+                'summary', 'en', 'contact'
             ];
+            
+            // Commandes spécifiques au français
+            const frCommands = [
+                'competences', 'competences-perso', 'langues', 'projets',
+                'resume', 'fr', 'contact'
+            ];
+            
+            // Fonction pour obtenir les commandes disponibles selon la langue actuelle
+            function getAvailableCommands() {
+                if (currentLanguage === 'en') {
+                    return [...commonCommands, ...enCommands];
+                } else {
+                    return [...commonCommands, ...frCommands];
+                }
+            }
+            
+            // Available files for autocompletion
+            const commonFiles = [
+                'experience.json', 'contact.txt', 'scan_targets.txt', 'deployments/'
+            ];
+            
+            const enFiles = [
+                'skills.json', 'soft-skills.json', 'languages.json',
+                'projects.json', 'summary.txt'
+            ];
+            
+            const frFiles = [
+                'competences.json', 'competences-perso.json', 'langues.json', 
+                'projets.json', 'resume.txt', 'cibles_scan.txt'
+            ];
+            
+            // Fonction pour obtenir les fichiers disponibles selon la langue actuelle
+            function getAvailableFiles() {
+                if (currentLanguage === 'en') {
+                    return [...commonFiles, ...enFiles];
+                } else {
+                    return [...commonFiles, ...frFiles];
+                }
+            }
             
             // Available directories
             const availableDirectories = {
@@ -377,143 +1236,137 @@
                 ]
             };
             
-            // Available commands
+            // Define the commands object
             const commands = {
                 help: function() {
-                    return currentLanguage === 'en' ? 
-                    `<pre style="font-family:monospace; margin:0; font-size:inherit; color:inherit; background:transparent;">Available commands:
-  help                  Display this help message
-  clear                 Clear the terminal
-  ls                    List available categories
-  cat &lt;file&gt;            Display content of a file (experience, skills, projects)
-  find &lt;keyword&gt;        Search for a keyword in the CV
-  whoami                Display basic info about Julien Mayer
-  scan [target]         Run a simulated security scan on a target (default: all)
-  deploy [app]          Deploy an application to Kubernetes cluster (demo)
-  skills                Display my technical skills
-  soft-skills           Show my personal skills
-  languages             Display languages I speak
-  experience            Show my work experience
-  projects              List my personal projects
-  contact               Display my contact information
-  summary               Show my professional summary
-  fr / en               Switch language to French / English
-  snake                 Play a game of Snake in the terminal
-  exit                  Close the terminal</pre>` :
-                    `<pre style="font-family:monospace; margin:0; font-size:inherit; color:inherit; background:transparent;">Commandes disponibles:
-  help                  Afficher ce message d'aide
-  clear                 Effacer le terminal
-  ls                    Lister les catégories disponibles
-  cat &lt;fichier&gt;         Afficher le contenu d'un fichier (experience, skills, projects)
-  find &lt;mot-clé&gt;        Rechercher un mot-clé dans le CV
-  whoami                Afficher les informations de base sur Julien Mayer
-  scan [cible]          Exécuter un scan de sécurité simulé sur une cible (par défaut: all)
-  deploy [app]          Déployer une application sur un cluster Kubernetes (démo)
-  competences           Afficher mes compétences techniques
-  competences-perso     Afficher mes compétences personnelles
-  langues               Afficher les langues que je parle
-  experience            Montrer mon expérience professionnelle
-  projets               Lister mes projets personnels
-  contact               Afficher mes coordonnées
-  resume                Afficher mon résumé professionnel
-  fr / en               Changer la langue en français / anglais
-  snake                 Jouer au jeu Snake dans le terminal
-  exit                  Fermer le terminal</pre>`;
+                    if (currentLanguage === 'en') {
+                        return `
+<div class="command-section"><i class="fas fa-star"></i> Essential Commands</div>
+  <span class="success">help</span> - Display this help message
+  <span class="success">clear</span> - Clear the terminal screen
+  <span class="success">exit</span> - Close the terminal
+  <span class="success">fr / en</span> - Switch language to French/English
+
+<div class="command-section"><i class="fas fa-file-alt"></i> File Operations</div>
+  <span class="success">ls</span> - List available files
+  <span class="success">cat [filename]</span> - View file contents
+  <span class="success">find [term]</span> - Search in CV content
+
+<div class="command-section"><i class="fas fa-user"></i> CV Information</div>
+  <span class="success">whoami</span> - Display information about me
+  <span class="success">skills / competences</span> - View my technical skills
+  <span class="success">soft-skills / competences-perso</span> - View my soft skills
+  <span class="success">languages / langues</span> - View languages I speak
+  <span class="success">experience</span> - View my work experience
+  <span class="success">projects / projets</span> - View my personal projects
+  <span class="success">summary / resume</span> - View my professional summary
+  <span class="success">contact</span> - View my contact information
+
+<div class="command-section"><i class="fas fa-terminal"></i> DevOps Demos</div>
+  <span class="success">scan [target]</span> - Run a security scan <span class="badge badge-info">Demo</span>
+  <span class="success">deploy [app]</span> - Deploy an application to Kubernetes <span class="badge badge-info">Demo</span>
+  <span class="success">snake</span> - Play Snake game <span class="badge badge-success">Fun</span>
+
+<div class="command-section"><i class="fas fa-keyboard"></i> Terminal Tips</div>
+  • Use <span class="badge badge-info">Tab</span> for command autocompletion
+  • Use <span class="badge badge-info">↑/↓</span> to navigate command history
+  • Type "ls deployments" to explore the deployments directory`;
+                    } else {
+                        return `
+<div class="command-section"><i class="fas fa-star"></i> Commandes Essentielles</div>
+  <span class="success">help</span> - Afficher ce message d'aide
+  <span class="success">clear</span> - Effacer l'écran du terminal
+  <span class="success">exit</span> - Fermer le terminal
+  <span class="success">fr / en</span> - Changer la langue en Français/Anglais
+
+<div class="command-section"><i class="fas fa-file-alt"></i> Opérations sur Fichiers</div>
+  <span class="success">ls</span> - Lister les fichiers disponibles
+  <span class="success">cat [nom_fichier]</span> - Voir le contenu d'un fichier
+  <span class="success">find [terme]</span> - Rechercher dans le contenu du CV
+
+<div class="command-section"><i class="fas fa-user"></i> Informations CV</div>
+  <span class="success">whoami</span> - Afficher des informations sur moi
+  <span class="success">skills / competences</span> - Voir mes compétences techniques
+  <span class="success">soft-skills / competences-perso</span> - Voir mes compétences personnelles
+  <span class="success">languages / langues</span> - Voir les langues que je parle
+  <span class="success">experience</span> - Voir mon expérience professionnelle
+  <span class="success">projects / projets</span> - Voir mes projets personnels
+  <span class="success">summary / resume</span> - Voir mon résumé professionnel
+  <span class="success">contact</span> - Voir mes informations de contact
+
+<div class="command-section"><i class="fas fa-terminal"></i> Démos DevOps</div>
+  <span class="success">scan [cible]</span> - Lancer un scan de sécurité <span class="badge badge-info">Démo</span>
+  <span class="success">deploy [app]</span> - Déployer une application sur Kubernetes <span class="badge badge-info">Démo</span>
+  <span class="success">snake</span> - Jouer au jeu Snake <span class="badge badge-success">Fun</span>
+
+<div class="command-section"><i class="fas fa-keyboard"></i> Astuces Terminal</div>
+  • Utilisez <span class="badge badge-info">Tab</span> pour l'autocomplétion des commandes
+  • Utilisez <span class="badge badge-info">↑/↓</span> pour naviguer dans l'historique des commandes
+  • Tapez "ls deployments" pour explorer le répertoire des déploiements`;
+                    }
                 },
                 ls: function() {
-                    return currentLanguage === 'en' ?
-                    `experience.json
-skills.json
-soft-skills.json
-languages.json
-projects.json
-summary.txt
-contact.txt
-scan_targets.txt
-deployments/` :
-                    `experience.json
-competences.json
-competences-perso.json
-langues.json
-projets.json
-resume.txt
-contact.txt
-cibles_scan.txt
-deployments/`;
+                    return `<span class="file-json">experience.json</span>
+<span class="file-json">skills.json</span>
+<span class="file-json">soft-skills.json</span>
+<span class="file-json">languages.json</span>
+<span class="file-json">projects.json</span>
+<span class="file-txt">summary.txt</span>
+<span class="file-txt">contact.txt</span>
+<span class="file-txt">scan_targets.txt</span>
+<span class="file-dir">deployments/</span>`;
                 },
                 cat: function(args) {
-                    if (!args.length) return currentLanguage === 'en' ? "Error: file name required" : "Erreur: nom de fichier requis";
-                    
-                    // Handle French file names
-                    let fileName = args[0];
-                    if (currentLanguage === 'fr') {
-                        if (fileName === 'competences.json') fileName = 'skills.json';
-                        if (fileName === 'competences-perso.json') fileName = 'soft-skills.json';
-                        if (fileName === 'langues.json') fileName = 'languages.json';
-                        if (fileName === 'projets.json') fileName = 'projects.json';
-                        if (fileName === 'resume.txt') fileName = 'summary.txt';
-                        if (fileName === 'cibles_scan.txt') fileName = 'scan_targets.txt';
+                    if (args.length === 0) {
+                        return `Error: Please specify a file to read.
+Usage: cat [filename]`;
                     }
+                    
+                    const fileName = args[0].toLowerCase();
                     
                     switch(fileName) {
                         case "experience.json":
-                            return JSON.stringify(cvData.experience, null, 2);
+                            return `<div class="json-output">${JSON.stringify(cvData.experience, null, 2)}</div>`;
                         case "skills.json":
-                            return JSON.stringify(cvData.skills, null, 2);
+                            return `<div class="json-output">${JSON.stringify(cvData.skills, null, 2)}</div>`;
                         case "soft-skills.json":
-                            return JSON.stringify(cvData.softSkills, null, 2);
+                            return `<div class="json-output">${JSON.stringify(cvData.softSkills, null, 2)}</div>`;
                         case "languages.json":
-                            return JSON.stringify(cvData.languages, null, 2);
+                            return `<div class="json-output">${JSON.stringify(cvData.languages, null, 2)}</div>`;
                         case "projects.json":
-                            return JSON.stringify(cvData.projects, null, 2);
+                            return `<div class="json-output">${JSON.stringify(cvData.projects, null, 2)}</div>`;
                         case "summary.txt":
-                            return document.querySelector("#summary p").getAttribute(`data-${currentLanguage}`);
+                        case "resume.txt":
+                            if (currentLanguage === 'en') {
+                                return "DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies.";
+                            } else {
+                                return "Ingénieur DevOps avec une forte expertise en automatisation, sécurité et gestion d'infrastructures cloud-native. Maîtrise de Docker, Kubernetes, ArgoCD, CI/CD, outils de surveillance (Grafana, Loki) et de sécurité (Trivy, Kyverno). Passionné par l'optimisation des workflows DevOps et l'implémentation des meilleures pratiques DevOps pour garantir des déploiements efficaces et sécurisés. Professionnel autodidacte avec un parcours prouvé d'apprentissage continu et d'implémentation de technologies de pointe.";
+                            }
                         case "contact.txt":
                             return `Email: mayer.julien22@gmail.com
 Phone: +33 783 531 926
-Location: Dinan, France
+Location: 1, rue du coignet 22100 Dinan, France
 GitHub: https://github.com/h4ckm1n-dev
 LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
                         case "scan_targets.txt":
-                            return currentLanguage === 'en' ?
-                            `Available scan targets:
-1. docker_images    - Scan container images for vulnerabilities
-2. k8s_cluster      - Audit Kubernetes configurations
-3. infrastructure   - Check for infrastructure misconfigurations
-4. ci_pipeline      - Analyze CI/CD security
-5. all              - Run all scans (default)` :
-                            `Cibles de scan disponibles:
-1. docker_images    - Scanner les images de conteneurs pour les vulnérabilités
-2. k8s_cluster      - Auditer les configurations Kubernetes
-3. infrastructure   - Vérifier les mauvaises configurations d'infrastructure
-4. ci_pipeline      - Analyser la sécurité du pipeline CI/CD
-5. all              - Exécuter tous les scans (par défaut)`;
-                        case "deployments/":
-                            return currentLanguage === 'en' ? 
-                                `This is a directory. Use 'ls deployments' to list its contents.` : 
-                                `Ceci est un répertoire. Utilisez 'ls deployments' pour lister son contenu.`;
+                        case "cibles_scan.txt":
+                            return `Available scan targets:
+- all: Run a comprehensive scan on all components
+- docker_images: Scan container images for vulnerabilities
+- k8s_cluster: Audit Kubernetes cluster security settings
+- infrastructure: Check infrastructure configurations
+- ci_pipeline: Analyze CI/CD pipeline security`;
                         default:
-                            return currentLanguage === 'en' ? 
-                                `Error: ${args[0]}: No such file or directory` : 
-                                `Erreur: ${args[0]}: Aucun fichier ou répertoire de ce type`;
+                            return `Error: File not found: ${fileName}`;
                     }
                 },
-                whoami: function() {
-                    return currentLanguage === 'en' ?
-                    `Julien Mayer
-DevOps Engineer
-Location: Dinan, France
--------------------
-"DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management."` :
-                    `Julien Mayer
-Ingénieur DevOps
-Localisation: Dinan, France
--------------------
-"Ingénieur DevOps avec une forte expertise en automatisation, sécurité et gestion d'infrastructures cloud-native."`;
-                },
                 find: function(args) {
-                    if (!args.length) return currentLanguage === 'en' ? "Error: search term required" : "Erreur: terme de recherche requis";
-                    const term = args[0].toLowerCase();
+                    if (args.length === 0) {
+                        return `Error: Please specify a term to search for.
+Usage: find [term]`;
+                    }
+                    
+                    const term = args.join(' ').toLowerCase();
                     let results = [];
                     
                     // Search in skills
@@ -541,9 +1394,10 @@ Localisation: Dinan, France
                     
                     // Search in experience
                     cvData.experience.forEach(job => {
-                        if (job.title.toLowerCase().includes(term)) {
-                            results.push(`experience.json: ${job.title}`);
+                        if (job.title.toLowerCase().includes(term) || job.location.toLowerCase().includes(term)) {
+                            results.push(`experience.json: ${job.title} - ${job.location}`);
                         }
+                        
                         job.highlights.forEach(highlight => {
                             if (highlight.toLowerCase().includes(term)) {
                                 results.push(`experience.json: ${job.title} - "${highlight.substring(0, 50)}..."`);
@@ -553,229 +1407,574 @@ Localisation: Dinan, France
                     
                     // Search in projects
                     cvData.projects.forEach(project => {
-                        if (project.name.toLowerCase().includes(term) || 
-                            project.description.toLowerCase().includes(term)) {
-                            results.push(`projects.json: ${project.name}`);
+                        if (project.name.toLowerCase().includes(term) || project.description.toLowerCase().includes(term)) {
+                            results.push(`projects.json: ${project.name} - "${project.description.substring(0, 50)}..."`);
                         }
                     });
                     
-                    return results.length ? results.join('\n') : currentLanguage === 'en' ? `No results found for "${term}"` : `Aucun résultat trouvé pour "${term}"`;
+                    if (results.length > 0) {
+                        return `Search results for "${term}":\n${results.join('\n')}`;
+                    } else {
+                        return `No results found for "${term}"`;
+                    }
                 },
-                // Nouvelles commandes pour l'exploration du CV
+                whoami: function() {
+                    if (currentLanguage === 'en') {
+                        return `
+<div class="content-box" style="border-left-color: #f5c2e7;">
+<span class="info">Name:</span> Julien Mayer <span class="badge badge-info">DevOps</span>
+<span class="info">Role:</span> DevOps Engineer <span class="badge badge-success">Professional</span>
+<span class="info">Location:</span> Dinan, France <span class="badge badge-warning">Available for remote work</span>
+<span class="info">Expertise:</span> Automation, Security, Cloud-Native Infrastructure
+
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+DevOps professional with expertise in designing, implementing, and maintaining
+secure and efficient cloud-native infrastructures. Specializing in 
+containerization, Kubernetes orchestration, CI/CD automation, 
+and infrastructure as code.
+</div>
+</div>`;
+                    } else {
+                        return `
+<div class="content-box" style="border-left-color: #f5c2e7;">
+<span class="info">Nom:</span> Julien Mayer <span class="badge badge-info">DevOps</span>
+<span class="info">Rôle:</span> Ingénieur DevOps <span class="badge badge-success">Professionnel</span>
+<span class="info">Localisation:</span> Dinan, France <span class="badge badge-warning">Disponible pour télétravail</span>
+<span class="info">Expertise:</span> Automatisation, Sécurité, Infrastructure Cloud-Native
+
+<div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1);">
+Professionnel DevOps avec expertise dans la conception, l'implémentation et la
+maintenance d'infrastructures cloud-natives sécurisées et efficaces. Spécialisé
+dans la conteneurisation, l'orchestration Kubernetes, l'automatisation CI/CD 
+et l'infrastructure en tant que code.
+</div>
+</div>`;
+                    }
+                },
+                fr: function() {
+                    currentLanguage = 'fr';
+                    document.documentElement.setAttribute('lang', 'fr');
+                    updateContent();
+                    return "Langue changée en Français.";
+                },
+                en: function() {
+                    currentLanguage = 'en';
+                    document.documentElement.setAttribute('lang', 'en');
+                    updateContent();
+                    return "Language switched to English.";
+                },
                 skills: function() {
-                    // Alias pour compétences en français
                     return displaySkills();
                 },
                 competences: function() {
-                    // Version française de la commande skills
-                    return displaySkills();
+                    return this.skills();
                 },
                 "soft-skills": function() {
-                    // Alias pour compétences personnelles en français
                     return displaySoftSkills();
                 },
                 "competences-perso": function() {
-                    // Version française de la commande soft-skills
-                    return displaySoftSkills();
+                    return this["soft-skills"]();
                 },
                 languages: function() {
-                    // Alias pour langues en français
                     return displayLanguages();
                 },
                 langues: function() {
-                    // Version française de la commande languages
-                    return displayLanguages();
+                    return this.languages();
                 },
                 experience: function() {
                     return displayExperience();
                 },
                 projects: function() {
-                    // Alias pour projets en français
                     return displayProjects();
                 },
                 projets: function() {
-                    // Version française de la commande projects
-                    return displayProjects();
+                    return this.projects();
+                },
+                summary: function() {
+                    if (currentLanguage === 'en') {
+                        return "DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies.";
+                    } else {
+                        return "Ingénieur DevOps avec une forte expertise en automatisation, sécurité et gestion d'infrastructures cloud-native. Maîtrise de Docker, Kubernetes, ArgoCD, CI/CD, outils de surveillance (Grafana, Loki) et de sécurité (Trivy, Kyverno). Passionné par l'optimisation des workflows DevOps et l'implémentation des meilleures pratiques DevOps pour garantir des déploiements efficaces et sécurisés. Professionnel autodidacte avec un parcours prouvé d'apprentissage continu et d'implémentation de technologies de pointe.";
+                    }
+                },
+                resume: function() {
+                    return this.summary();
                 },
                 contact: function() {
-                    return currentLanguage === 'en' ?
-                    `Contact Information:
-    
-Email: mayer.julien22@gmail.com
+                    return `Email: mayer.julien22@gmail.com
 Phone: +33 783 531 926
-Location: Dinan, France
-GitHub: https://github.com/h4ckm1n-dev
-LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/` :
-                    `Coordonnées:
-    
-Email: mayer.julien22@gmail.com
-Téléphone: +33 783 531 926
-Localisation: Dinan, France
+Location: 1, rue du coignet 22100 Dinan, France
 GitHub: https://github.com/h4ckm1n-dev
 LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
                 },
-                summary: function() {
-                    // Alias pour resume en français
-                    return document.querySelector("#summary p").getAttribute(`data-${currentLanguage}`);
-                },
-                resume: function() {
-                    // Version française de la commande summary
-                    return document.querySelector("#summary p").getAttribute(`data-${currentLanguage}`);
-                },
-                fr: function() {
-                    if (currentLanguage !== 'fr') {
-                        currentLanguage = 'fr';
-                        document.documentElement.setAttribute('lang', 'fr');
-                        updateContent();
-                        return "Langue changée en français.";
+                snake: function() {
+                    // Initialisation du jeu Snake
+                    const message = currentLanguage === 'en' ? 
+                        "Starting Snake game... Use arrow keys to control, 'Q' to quit." :
+                        "Démarrage du jeu Snake... Utilisez les flèches pour contrôler, 'Q' pour quitter.";
+                    
+                    printToTerminal(message);
+                    
+                    // Créer le conteneur de jeu
+                    const gameContainer = document.createElement('div');
+                    gameContainer.id = 'snake-game';
+                    terminalOutput.appendChild(gameContainer);
+                    
+                    // Réglages du jeu
+                    const width = 20; // Largeur de la grille
+                    const height = 15; // Hauteur de la grille
+                    const cellSize = 20; // Taille des cellules
+                    const initialSpeed = 200; // Vitesse initiale (ms)
+                    
+                    // Variables du jeu
+                    let snake = [{x: 10, y: 7}]; // Position initiale du serpent
+                    let food = {x: 15, y: 7}; // Position initiale de la nourriture
+                    let direction = 'right'; // Direction initiale
+                    let nextDirection = 'right'; // Prochaine direction
+                    let gameOver = false; // État du jeu
+                    let score = 0; // Score
+                    let speed = initialSpeed; // Vitesse actuelle
+                    let gameInterval; // Intervalle du jeu
+                    
+                    // Créer la grille de jeu
+                    const gameBoard = document.createElement('div');
+                    gameBoard.style.width = (width * cellSize) + 'px';
+                    gameBoard.style.height = (height * cellSize) + 'px';
+                    gameBoard.style.position = 'relative';
+                    gameBoard.style.backgroundColor = '#1a1b26';
+                    gameBoard.style.border = '2px solid #414868';
+                    gameBoard.style.borderRadius = '4px';
+                    gameBoard.style.margin = '10px auto';
+                    gameBoard.style.overflow = 'hidden';
+                    gameContainer.appendChild(gameBoard);
+                    
+                    // Afficher le score
+                    const scoreDisplay = document.createElement('div');
+                    scoreDisplay.style.color = '#a9b1d6';
+                    scoreDisplay.style.margin = '10px 0';
+                    scoreDisplay.style.fontFamily = "'JetBrains Mono', monospace";
+                    scoreDisplay.style.textAlign = 'center';
+                    scoreDisplay.textContent = currentLanguage === 'en' ? `Score: ${score}` : `Score: ${score}`;
+                    gameContainer.appendChild(scoreDisplay);
+                    
+                    // Afficher les instructions
+                    const instructions = document.createElement('div');
+                    instructions.style.color = '#7aa2f7';
+                    instructions.style.fontSize = '0.9rem';
+                    instructions.style.margin = '10px 0';
+                    instructions.style.textAlign = 'center';
+                    instructions.innerHTML = currentLanguage === 'en' ? 
+                        '← ↑ → ↓ to move, <span class="badge badge-info">Q</span> to quit' : 
+                        '← ↑ → ↓ pour se déplacer, <span class="badge badge-info">Q</span> pour quitter';
+                    gameContainer.appendChild(instructions);
+                    
+                    // Fonction pour dessiner le serpent
+                    function render() {
+                        // Effacer le plateau
+                        gameBoard.innerHTML = '';
+                        
+                        // Dessiner la nourriture
+                        const foodElement = document.createElement('div');
+                        foodElement.style.position = 'absolute';
+                        foodElement.style.width = cellSize + 'px';
+                        foodElement.style.height = cellSize + 'px';
+                        foodElement.style.backgroundColor = '#f7768e';
+                        foodElement.style.borderRadius = '50%';
+                        foodElement.style.left = (food.x * cellSize) + 'px';
+                        foodElement.style.top = (food.y * cellSize) + 'px';
+                        gameBoard.appendChild(foodElement);
+                        
+                        // Animation de "pulsation" de la nourriture
+                        foodElement.animate([
+                            { transform: 'scale(0.8)' },
+                            { transform: 'scale(1)' },
+                            { transform: 'scale(0.8)' }
+                        ], {
+                            duration: 1000,
+                            iterations: Infinity
+                        });
+                        
+                        // Dessiner le serpent
+                        snake.forEach((segment, index) => {
+                            const snakeElement = document.createElement('div');
+                            snakeElement.style.position = 'absolute';
+                            snakeElement.style.width = cellSize + 'px';
+                            snakeElement.style.height = cellSize + 'px';
+                            
+                            // Tête avec une couleur différente
+                            if (index === 0) {
+                                snakeElement.style.backgroundColor = '#9ece6a';
+                                snakeElement.style.borderRadius = '4px';
+                                
+                                // Yeux du serpent
+                                const leftEye = document.createElement('div');
+                                leftEye.style.position = 'absolute';
+                                leftEye.style.width = '4px';
+                                leftEye.style.height = '4px';
+                                leftEye.style.backgroundColor = '#16161e';
+                                leftEye.style.borderRadius = '50%';
+                                
+                                const rightEye = document.createElement('div');
+                                rightEye.style.position = 'absolute';
+                                rightEye.style.width = '4px';
+                                rightEye.style.height = '4px';
+                                rightEye.style.backgroundColor = '#16161e';
+                                rightEye.style.borderRadius = '50%';
+                                
+                                if (direction === 'right') {
+                                    leftEye.style.top = '5px';
+                                    leftEye.style.right = '5px';
+                                    rightEye.style.top = '5px';
+                                    rightEye.style.right = '5px';
+                                } else if (direction === 'left') {
+                                    leftEye.style.top = '5px';
+                                    leftEye.style.left = '5px';
+                                    rightEye.style.top = '5px';
+                                    rightEye.style.left = '5px';
+                                } else if (direction === 'up') {
+                                    leftEye.style.top = '5px';
+                                    leftEye.style.left = '5px';
+                                    rightEye.style.top = '5px';
+                                    rightEye.style.right = '5px';
+                                } else if (direction === 'down') {
+                                    leftEye.style.bottom = '5px';
+                                    leftEye.style.left = '5px';
+                                    rightEye.style.bottom = '5px';
+                                    rightEye.style.right = '5px';
+                                }
+                                
+                                snakeElement.appendChild(leftEye);
+                                snakeElement.appendChild(rightEye);
+                            } else {
+                                // Corps avec une couleur légèrement différente
+                                snakeElement.style.backgroundColor = `hsl(${120 + index * 5}, 70%, 60%)`;
+                                snakeElement.style.borderRadius = '3px';
+                            }
+                            
+                            snakeElement.style.left = (segment.x * cellSize) + 'px';
+                            snakeElement.style.top = (segment.y * cellSize) + 'px';
+                            gameBoard.appendChild(snakeElement);
+                        });
                     }
-                    return "La langue est déjà en français.";
-                },
-                en: function() {
-                    if (currentLanguage !== 'en') {
-                        currentLanguage = 'en';
-                        document.documentElement.setAttribute('lang', 'en');
-                        updateContent();
-                        return "Language changed to English.";
+                    
+                    // Fonction pour générer de la nourriture
+                    function generateFood() {
+                        let newFood;
+                        do {
+                            newFood = {
+                                x: Math.floor(Math.random() * width),
+                                y: Math.floor(Math.random() * height)
+                            };
+                            // Vérifier si la nourriture n'est pas sur le serpent
+                        } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+                        
+                        food = newFood;
                     }
-                    return "Language is already set to English.";
-                },
-                // Commandes existantes
-                scan: function(args) {
-                    const target = args.length ? args[0] : "all";
-                    let results = "";
                     
-                    // Start scan with animated progress
-                    printToTerminal(`<span class="success">[+] Starting security scan on target: ${target}</span>`);
+                    // Fonction pour bouger le serpent
+                    function moveSnake() {
+                        if (gameOver) return;
+                        
+                        // Mettre à jour la direction
+                        direction = nextDirection;
+                        
+                        // Calculer la nouvelle tête
+                        const head = { ...snake[0] };
+                        
+                        switch (direction) {
+                            case 'right': head.x++; break;
+                            case 'left': head.x--; break;
+                            case 'up': head.y--; break;
+                            case 'down': head.y++; break;
+                        }
+                        
+                        // Vérifier les collisions avec les murs
+                        if (head.x < 0 || head.x >= width || head.y < 0 || head.y >= height) {
+                            endGame();
+                            return;
+                        }
+                        
+                        // Vérifier les collisions avec le serpent lui-même
+                        if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+                            endGame();
+                            return;
+                        }
+                        
+                        // Ajouter la nouvelle tête
+                        snake.unshift(head);
+                        
+                        // Vérifier si le serpent mange la nourriture
+                        if (head.x === food.x && head.y === food.y) {
+                            // Augmenter le score
+                            score += 10;
+                            scoreDisplay.textContent = currentLanguage === 'en' ? `Score: ${score}` : `Score: ${score}`;
+                            
+                            // Accélérer légèrement le jeu
+                            speed = Math.max(50, speed - 5);
+                            clearInterval(gameInterval);
+                            gameInterval = setInterval(moveSnake, speed);
+                            
+                            // Générer une nouvelle nourriture
+                            generateFood();
+                        } else {
+                            // Retirer la queue si pas mangé
+                            snake.pop();
+                        }
+                        
+                        // Redessiner
+                        render();
+                    }
                     
-                    // Simulate scan process with delay
+                    // Fonction pour terminer le jeu
+                    function endGame() {
+                        gameOver = true;
+                        clearInterval(gameInterval);
+                        
+                        // Afficher message de fin
+                        const gameOverMessage = document.createElement('div');
+                        gameOverMessage.style.position = 'absolute';
+                        gameOverMessage.style.top = '50%';
+                        gameOverMessage.style.left = '50%';
+                        gameOverMessage.style.transform = 'translate(-50%, -50%)';
+                        gameOverMessage.style.backgroundColor = 'rgba(26, 27, 38, 0.8)';
+                        gameOverMessage.style.color = '#f7768e';
+                        gameOverMessage.style.padding = '20px';
+                        gameOverMessage.style.borderRadius = '5px';
+                        gameOverMessage.style.fontWeight = 'bold';
+                        gameOverMessage.style.textAlign = 'center';
+                        gameOverMessage.style.zIndex = '10';
+                        gameOverMessage.innerHTML = currentLanguage === 'en' ? 
+                            `Game Over!<br>Final Score: ${score}` : 
+                            `Partie terminée !<br>Score final : ${score}`;
+                        gameBoard.appendChild(gameOverMessage);
+                    }
+                    
+                    // Gestionnaire d'événements clavier
+                    function handleKeyDown(e) {
+                        switch (e.key) {
+                            case 'ArrowRight':
+                                if (direction !== 'left') nextDirection = 'right';
+                                e.preventDefault();
+                                break;
+                            case 'ArrowLeft':
+                                if (direction !== 'right') nextDirection = 'left';
+                                e.preventDefault();
+                                break;
+                            case 'ArrowUp':
+                                if (direction !== 'down') nextDirection = 'up';
+                                e.preventDefault();
+                                break;
+                            case 'ArrowDown':
+                                if (direction !== 'up') nextDirection = 'down';
+                                e.preventDefault();
+                                break;
+                            case 'q':
+                            case 'Q':
+                                // Quitter le jeu
+                                clearInterval(gameInterval);
+                                gameContainer.remove();
+                                printToTerminal(currentLanguage === 'en' ? 
+                                    `Snake game ended. Final score: ${score}` : 
+                                    `Jeu Snake terminé. Score final : ${score}`);
+                                document.removeEventListener('keydown', handleKeyDown);
+                                // Rétablir le focus sur l'entrée du terminal
+                                terminalInput.focus();
+                                e.preventDefault();
+                                break;
+                        }
+                    }
+                    
+                    // Démarrer le jeu
+                    render();
+                    gameInterval = setInterval(moveSnake, speed);
+                    document.addEventListener('keydown', handleKeyDown);
+                    
+                    // Faire défiler pour voir le jeu
                     setTimeout(() => {
-                        printToTerminal(`<span>[*] Initializing scan environment...</span>`);
-                    }, 500);
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    }, 100);
                     
-                    setTimeout(() => {
-                        printToTerminal(`<span>[*] Loading security policies and vulnerability database...</span>`);
-                    }, 1200);
-                    
-                    setTimeout(() => {
-                        if (target === "all" || target === "docker_images") {
-                            printToTerminal(`<span>[*] Scanning Docker images for vulnerabilities...</span>`);
-                            setTimeout(() => {
-                                printToTerminal(`<span class="success">[+] Found 3 container images:</span>
+                    return message;
+                }
+            };
+            
+            // Store original functions before modifying them
+            const originalScanFn = commands.scan;
+            const originalDeployFn = commands.deploy;
+            
+            // Modify the scan and deploy command functions to use the improved styling
+            commands.scan = function(args) {
+                const target = args.length ? args[0] : "all";
+                let results = "";
+                
+                // Start scan with animated progress
+                printToTerminal(`<span class="success">[+] Starting security scan on target: ${target}</span>`);
+                printToTerminal(`<div class="progress-bar"><div class="progress-bar-fill" id="scan-progress"></div></div>`);
+                
+                // Animate progress bar
+                const progressBar = document.getElementById('scan-progress');
+                if (progressBar) {
+                    setTimeout(() => progressBar.style.width = '30%', 500);
+                    setTimeout(() => progressBar.style.width = '60%', 3000);
+                    setTimeout(() => progressBar.style.width = '80%', 6000);
+                    setTimeout(() => progressBar.style.width = '100%', 8500);
+                }
+                
+                // Simulate scan process with delay
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Initializing scan environment...</span>`);
+                }, 500);
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Loading security policies and vulnerability database...</span>`);
+                }, 1200);
+                
+                setTimeout(() => {
+                    if (target === "all" || target === "docker_images") {
+                        printToTerminal(`<span class="info">[*] Scanning Docker images for vulnerabilities...</span>`);
+                        setTimeout(() => {
+                            printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Found 3 container images:</span>
   - nginx:1.23.1 [<span class="success">✓</span>]
   - python:3.9-slim [<span class="error">✗</span> CVE-2023-24329 - Medium]
-  - postgres:14.5 [<span class="success">✓</span>]`);
-                            }, 800);
-                        }
-                    }, 2000);
-                    
-                    setTimeout(() => {
-                        if (target === "all" || target === "k8s_cluster") {
-                            printToTerminal(`<span>[*] Auditing Kubernetes configurations...</span>`);
-                            setTimeout(() => {
-                                printToTerminal(`<span class="success">[+] Kubernetes security audit:</span>
+  - postgres:14.5 [<span class="success">✓</span>]
+</div>`);
+                        }, 800);
+                    }
+                }, 2000);
+                
+                setTimeout(() => {
+                    if (target === "all" || target === "k8s_cluster") {
+                        printToTerminal(`<span class="info">[*] Auditing Kubernetes configurations...</span>`);
+                        setTimeout(() => {
+                            printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Kubernetes security audit:</span>
   - Pod Security Standards: <span class="success">Passed</span>
   - RBAC Configuration: <span class="success">Secure</span>
   - Network Policies: <span class="error">Warning - Default allow policy detected</span>
-  - Secrets Management: <span class="success">Using Vault integration</span>`);
-                            }, 1200);
-                        }
-                    }, 3500);
-                    
-                    setTimeout(() => {
-                        if (target === "all" || target === "infrastructure") {
-                            printToTerminal(`<span>[*] Checking infrastructure configurations...</span>`);
-                            setTimeout(() => {
-                                printToTerminal(`<span class="success">[+] Infrastructure audit:</span>
+  - Secrets Management: <span class="success">Using Vault integration</span>
+</div>`);
+                        }, 1200);
+                    }
+                }, 3500);
+                
+                setTimeout(() => {
+                    if (target === "all" || target === "infrastructure") {
+                        printToTerminal(`<span class="info">[*] Checking infrastructure configurations...</span>`);
+                        setTimeout(() => {
+                            printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Infrastructure audit:</span>
   - IAM Permissions: <span class="success">Principle of least privilege confirmed</span>
   - Encryption: <span class="success">At-rest and in-transit encryption enabled</span>
   - Public Access: <span class="error">Warning - S3 bucket 'logs-backup' publicly accessible</span>
-  - Security Groups: <span class="success">Properly configured</span>`);
-                            }, 1000);
-                        }
-                    }, 5500);
-                    
-                    setTimeout(() => {
-                        if (target === "all" || target === "ci_pipeline") {
-                            printToTerminal(`<span>[*] Analyzing CI/CD pipeline security...</span>`);
-                            setTimeout(() => {
-                                printToTerminal(`<span class="success">[+] CI/CD security analysis:</span>
+  - Security Groups: <span class="success">Properly configured</span>
+</div>`);
+                        }, 1000);
+                    }
+                }, 5500);
+                
+                setTimeout(() => {
+                    if (target === "all" || target === "ci_pipeline") {
+                        printToTerminal(`<span class="info">[*] Analyzing CI/CD pipeline security...</span>`);
+                        setTimeout(() => {
+                            printToTerminal(`<div class="content-box">
+<span class="command-section">[+] CI/CD security analysis:</span>
   - Secrets Management: <span class="success">Using GitLab CI/CD protected variables</span>
   - SAST Integration: <span class="success">SonarQube running on all PRs</span>
   - Container Scanning: <span class="success">Trivy integrated in pipeline</span>
-  - Dependency Scanning: <span class="success">Using OWASP Dependency Check</span>`);
-                            }, 1200);
-                        }
-                    }, 7000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span class="success">[+] Security scan completed!</span>
-<span>[*] Summary:</span>
+  - Dependency Scanning: <span class="success">Using OWASP Dependency Check</span>
+</div>`);
+                        }, 1200);
+                    }
+                }, 7000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Security scan completed!</span>
+<span class="info">[*] Summary:</span>
   - <span class="success">9 checks passed</span>
   - <span class="error">2 warnings found</span>
   - <span class="error">1 vulnerability detected</span>
 
-<span>[*] Recommended actions:</span>
+<span class="info">[*] Recommended actions:</span>
   - Update python:3.9-slim image to latest patch
   - Implement default-deny network policies in Kubernetes
   - Remove public access from 'logs-backup' S3 bucket
 
-<span class="success">[+] Full scan report would be sent to security@example.com in a real environment</span>`);
-                    }, 9000);
-                    
-                    return "Initiating security scan, please wait...";
-                },
-                deploy: function(args) {
-                    const app = args.length ? args[0] : "demo-app";
-                    
-                    printToTerminal(`<span class="success">[+] Starting deployment of "${app}" to Kubernetes cluster...</span>`);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span>[*] Validating Kubernetes manifest...</span>`);
-                    }, 500);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span>[*] Building container image: ${app}:v1.0.4...</span>`);
-                    }, 1500);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span class="success">[+] Container build successful!</span>
-<span>[*] Docker image details:</span>
+<span class="success">[+] Full scan report would be sent to security@example.com in a real environment</span>
+</div>`);
+                }, 9000);
+                
+                return "Initiating security scan, please wait...";
+            };
+            
+            commands.deploy = function(args) {
+                const app = args.length ? args[0] : "demo-app";
+                
+                printToTerminal(`<span class="success">[+] Starting deployment of "${app}" to Kubernetes cluster...</span>`);
+                printToTerminal(`<div class="progress-bar"><div class="progress-bar-fill" id="deploy-progress"></div></div>`);
+                
+                // Animate progress bar
+                const progressBar = document.getElementById('deploy-progress');
+                if (progressBar) {
+                    setTimeout(() => progressBar.style.width = '20%', 500);
+                    setTimeout(() => progressBar.style.width = '40%', 2000);
+                    setTimeout(() => progressBar.style.width = '60%', 4000);
+                    setTimeout(() => progressBar.style.width = '80%', 7000);
+                    setTimeout(() => progressBar.style.width = '100%', 10000);
+                }
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Validating Kubernetes manifest...</span>`);
+                }, 500);
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Building container image: ${app}:v1.0.4...</span>`);
+                }, 1500);
+                
+                setTimeout(() => {
+                    printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Container build successful!</span>
+<span class="info">[*] Docker image details:</span>
   - Name: ${app}:v1.0.4
   - Size: 156MB
   - Layers: 8
   - Base: alpine:3.16
-  - Security scan: <span class="success">Passed</span>`);
-                    }, 3000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span>[*] Pushing image to container registry...</span>`);
-                    }, 4000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span class="success">[+] Image pushed successfully to registry.example.com/${app}:v1.0.4</span>`);
-                    }, 5000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span>[*] Applying Kubernetes manifests with kubectl...</span>`);
-                    }, 6000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span class="success">[+] Kubernetes resources created:</span>
+  - Security scan: <span class="success">Passed</span>
+</div>`);
+                }, 3000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Pushing image to container registry...</span>`);
+                }, 4000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="success">[+] Image pushed successfully to registry.example.com/${app}:v1.0.4</span>`);
+                }, 5000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Applying Kubernetes manifests with kubectl...</span>`);
+                }, 6000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Kubernetes resources created:</span>
   - Deployment/${app}
   - Service/${app}
   - Ingress/${app}
   - ConfigMap/${app}-config
-  - Secret/${app}-secrets`);
-                    }, 7000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span>[*] Waiting for pods to be ready...</span>`);
-                    }, 8000);
-                    
-                    setTimeout(() => {
-                        // ASCII representation of pods
-                        printToTerminal(`<span class="success">[+] Pods are running:</span>
+  - Secret/${app}-secrets
+</div>`);
+                }, 7000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<span class="info">[*] Waiting for pods to be ready...</span>`);
+                }, 8000);
+                
+                setTimeout(() => {
+                    // ASCII representation of pods with improved styling
+                    printToTerminal(`<div class="content-box" style="font-family: monospace; line-height: 1.2;">
+<span class="command-section">[+] Pods are running:</span>
 
  +-------------------------------------------------------------------------+
  |                                                                         |
@@ -801,12 +2000,13 @@ LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
  |    +-----------------------------------------------------------------+  |
  |                                                                         |
  +-------------------------------------------------------------------------+
-`);
-                    }, 10000);
-                    
-                    setTimeout(() => {
-                        printToTerminal(`<span class="success">[+] Application deployed successfully!</span>
-<span>[*] Deployment details:</span>
+</div>`);
+                }, 10000);
+                
+                setTimeout(() => {
+                    printToTerminal(`<div class="content-box">
+<span class="command-section">[+] Application deployed successfully!</span>
+<span class="info">[*] Deployment details:</span>
   - Replicas: 4/4 ready
   - Strategy: RollingUpdate (maxSurge: 25%, maxUnavailable: 25%)
   - Image: registry.example.com/${app}:v1.0.4
@@ -814,330 +2014,59 @@ LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
   - Health: Readiness and Liveness probes configured
   - URL: https://${app}.example.com
 
-<span class="success">[+] Deployment completed in 10.2 seconds</span>`);
-                    }, 12000);
-                    
-                    return "Starting deployment process, please wait...";
-                },
-                education: function() {
-                    // Alias pour formation en français
-                    return displayEducation();
-                },
-                formation: function() {
-                    // Version française de la commande education
-                    return displayEducation();
-                },
-                snake: function() {
-                    // Start game message
-                    const startMessage = currentLanguage === 'en' ? 
-                        "Starting Snake game... Use arrow keys to move, 'q' to quit" : 
-                        "Démarrage du jeu Snake... Utilisez les flèches pour vous déplacer, 'q' pour quitter";
-                    
-                    printToTerminal(startMessage);
-                    
-                    // Create a game container
-                    const gameContainer = document.createElement('div');
-                    gameContainer.id = 'snake-game';
-                    gameContainer.style.fontFamily = 'monospace';
-                    gameContainer.style.lineHeight = '1';
-                    gameContainer.style.padding = '10px';
-                    gameContainer.style.backgroundColor = '#1a1a1a';
-                    gameContainer.style.border = '1px solid #444';
-                    gameContainer.style.borderRadius = '4px';
-                    gameContainer.style.margin = '10px 0';
-                    gameContainer.style.overflow = 'hidden';
-                    gameContainer.style.position = 'relative';
-                    
-                    terminalOutput.appendChild(gameContainer);
-                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                    
-                    // Game variables
-                    const width = 20;
-                    const height = 15;
-                    let snake = [{x: 10, y: 8}, {x: 9, y: 8}, {x: 8, y: 8}];
-                    let food = {x: 15, y: 8};
-                    let direction = 'right';
-                    let nextDirection = 'right';
-                    let gameOver = false;
-                    let score = 0;
-                    let speed = 200;
-                    
-                    // Create game board
-                    const board = document.createElement('div');
-                    board.style.width = `${width * 1.2}em`;
-                    board.style.height = `${height * 1.2}em`;
-                    board.style.position = 'relative';
-                    gameContainer.appendChild(board);
-                    
-                    // Create score display
-                    const scoreDisplay = document.createElement('div');
-                    scoreDisplay.style.marginTop = '10px';
-                    scoreDisplay.style.color = '#4CAF50';
-                    scoreDisplay.style.fontWeight = 'bold';
-                    gameContainer.appendChild(scoreDisplay);
-                    
-                    // Function to render the game
-                    function render() {
-                        // Clear board
-                        board.innerHTML = '';
-                        
-                        // Create board background
-                        for (let y = 0; y < height; y++) {
-                            for (let x = 0; x < width; x++) {
-                                const cell = document.createElement('div');
-                                cell.style.position = 'absolute';
-                                cell.style.left = `${x * 1.2}em`;
-                                cell.style.top = `${y * 1.2}em`;
-                                cell.style.width = '1em';
-                                cell.style.height = '1em';
-                                cell.style.color = '#333';
-                                cell.textContent = '·';
-                                board.appendChild(cell);
-                            }
-                        }
-                        
-                        // Draw food
-                        const foodElement = document.createElement('div');
-                        foodElement.style.position = 'absolute';
-                        foodElement.style.left = `${food.x * 1.2}em`;
-                        foodElement.style.top = `${food.y * 1.2}em`;
-                        foodElement.style.width = '1em';
-                        foodElement.style.height = '1em';
-                        foodElement.style.color = '#E91E63';
-                        foodElement.textContent = '●';
-                        board.appendChild(foodElement);
-                        
-                        // Draw snake
-                        snake.forEach((segment, index) => {
-                            const snakePart = document.createElement('div');
-                            snakePart.style.position = 'absolute';
-                            snakePart.style.left = `${segment.x * 1.2}em`;
-                            snakePart.style.top = `${segment.y * 1.2}em`;
-                            snakePart.style.width = '1em';
-                            snakePart.style.height = '1em';
-                            snakePart.style.color = index === 0 ? '#4CAF50' : '#8BC34A';
-                            snakePart.textContent = index === 0 ? '█' : '▓';
-                            board.appendChild(snakePart);
-                        });
-                        
-                        // Update score
-                        scoreDisplay.textContent = currentLanguage === 'en' ? 
-                            `Score: ${score} | Press 'q' to quit` : 
-                            `Score: ${score} | Appuyez sur 'q' pour quitter`;
-                    }
-                    
-                    // Function to move the snake
-                    function moveSnake() {
-                        if (gameOver) return;
-                        
-                        // Update direction
-                        direction = nextDirection;
-                        
-                        // Calculate new head position
-                        const head = {...snake[0]};
-                        switch (direction) {
-                            case 'up': head.y--; break;
-                            case 'down': head.y++; break;
-                            case 'left': head.x--; break;
-                            case 'right': head.x++; break;
-                        }
-                        
-                        // Check for collisions with walls
-                        if (head.x < 0 || head.x >= width || head.y < 0 || head.y >= height) {
-                            endGame();
-                            return;
-                        }
-                        
-                        // Check for collisions with self
-                        for (let i = 0; i < snake.length; i++) {
-                            if (snake[i].x === head.x && snake[i].y === head.y) {
-                                endGame();
-                                return;
-                            }
-                        }
-                        
-                        // Add new head
-                        snake.unshift(head);
-                        
-                        // Check if food eaten
-                        if (head.x === food.x && head.y === food.y) {
-                            // Increase score
-                            score += 10;
-                            // Generate new food
-                            generateFood();
-                            // Speed up
-                            if (speed > 70) speed -= 5;
-                        } else {
-                            // Remove tail
-                            snake.pop();
-                        }
-                        
-                        // Render game
-                        render();
-                        
-                        // Continue game loop
-                        gameInterval = setTimeout(moveSnake, speed);
-                    }
-                    
-                    // Function to generate food
-                    function generateFood() {
-                        // Find a free spot for the food
-                        let valid = false;
-                        while (!valid) {
-                            food = {
-                                x: Math.floor(Math.random() * width),
-                                y: Math.floor(Math.random() * height)
-                            };
-                            
-                            valid = true;
-                            for (let i = 0; i < snake.length; i++) {
-                                if (snake[i].x === food.x && snake[i].y === food.y) {
-                                    valid = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                    
-                    // Function to end the game
-                    function endGame() {
-                        gameOver = true;
-                        clearTimeout(gameInterval);
-                        
-                        // Show game over message
-                        const gameOverMessage = document.createElement('div');
-                        gameOverMessage.style.position = 'absolute';
-                        gameOverMessage.style.top = '50%';
-                        gameOverMessage.style.left = '50%';
-                        gameOverMessage.style.transform = 'translate(-50%, -50%)';
-                        gameOverMessage.style.backgroundColor = 'rgba(0,0,0,0.8)';
-                        gameOverMessage.style.padding = '20px';
-                        gameOverMessage.style.borderRadius = '5px';
-                        gameOverMessage.style.color = '#fff';
-                        gameOverMessage.style.textAlign = 'center';
-                        gameOverMessage.style.fontSize = '16px';
-                        gameOverMessage.innerHTML = currentLanguage === 'en' ? 
-                            `Game Over!<br>Your score: ${score}<br>Press any key to continue` : 
-                            `Partie terminée !<br>Votre score : ${score}<br>Appuyez sur n'importe quelle touche pour continuer`;
-                        
-                        board.appendChild(gameOverMessage);
-                        
-                        // Re-enable terminal input
-                        document.removeEventListener('keydown', handleGameControls);
-                        terminalInput.focus();
-                        
-                        // Add a message to the terminal
-                        const finalMessage = document.createElement('div');
-                        finalMessage.innerHTML = currentLanguage === 'en' ? 
-                            `<span style="color: #E91E63;">Game Over! Your score: ${score}</span>` : 
-                            `<span style="color: #E91E63;">Partie terminée ! Votre score : ${score}</span>`;
-                        terminalOutput.appendChild(finalMessage);
-                        
-                        // Add spacing
-                        const spacer = document.createElement('div');
-                        spacer.classList.add('terminal-spacer');
-                        terminalOutput.appendChild(spacer);
-                        
-                        // Scroll to ensure the game and message are visible
-                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                    }
-                    
-                    // Handle keyboard controls
-                    function handleGameControls(e) {
-                        // Prevent default action (scrolling, etc)
-                        e.preventDefault();
-                        
-                        // Exit the game if 'q' is pressed
-                        if (e.key === 'q') {
-                            clearTimeout(gameInterval);
-                            document.removeEventListener('keydown', handleGameControls);
-                            
-                            // Add a message to the terminal
-                            const quitMessage = document.createElement('div');
-                            quitMessage.innerHTML = currentLanguage === 'en' ? 
-                                `<span style="color: #999;">Game exited. Your score: ${score}</span>` : 
-                                `<span style="color: #999;">Jeu quitté. Votre score : ${score}</span>`;
-                            terminalOutput.appendChild(quitMessage);
-                            
-                            // Add spacing
-                            const spacer = document.createElement('div');
-                            spacer.classList.add('terminal-spacer');
-                            terminalOutput.appendChild(spacer);
-                            
-                            // Re-enable terminal input
-                            terminalInput.focus();
-                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
-                            return;
-                        }
-                        
-                        // Game over state - any key restarts
-                        if (gameOver) {
-                            document.removeEventListener('keydown', handleGameControls);
-                            terminalInput.focus();
-                            return;
-                        }
-                        
-                        // Update direction based on key
-                        switch(e.key) {
-                            case 'ArrowUp':
-                                if (direction !== 'down') nextDirection = 'up';
-                                break;
-                            case 'ArrowDown':
-                                if (direction !== 'up') nextDirection = 'down';
-                                break;
-                            case 'ArrowLeft':
-                                if (direction !== 'right') nextDirection = 'left';
-                                break;
-                            case 'ArrowRight':
-                                if (direction !== 'left') nextDirection = 'right';
-                                break;
-                        }
-                    }
-                    
-                    // Start the game
-                    let gameInterval;
-                    
-                    // Initial render
-                    render();
-                    
-                    // Set up event listener for game controls
-                    document.addEventListener('keydown', handleGameControls);
-                    
-                    // Disable terminal input while playing
-                    terminalInput.blur();
-                    
-                    // Start game loop
-                    gameInterval = setTimeout(moveSnake, speed);
-                    
-                    return "Snake game initialized. Use arrow keys to control the snake.";
-                }
+<span class="success">[+] Deployment completed in 10.2 seconds</span>
+</div>`);
+                }, 12000);
+                
+                return "Starting deployment process, please wait...";
             };
             
             // Open terminal
             openTerminalBtn.addEventListener('click', function() {
-                terminalOverlay.classList.remove('hidden');
-                terminalInput.focus();
-                
-                // Welcome message
-                printToTerminal(`<span style="color: #8ae234;">Welcome to Julien Mayer's interactive CV terminal!</span>
-Type <span style="color: #729fcf;">help</span> to see available commands.
+                console.log("Opening terminal...");
+                try {
+                    terminalOverlay.classList.remove('hidden');
+                    terminalInput.focus();
+                    
+                    // Welcome message with typing effect
+                    printToTerminal(`<div class="typing-effect"><span style="color: #8ae234;">Welcome to Julien Mayer's interactive CV terminal!</span></div>
+Type <span style="color: #729fcf;">help</span> to see available commands. Press <span class="badge badge-info">Tab</span> for autocompletion.
 `);
+                    console.log("Terminal opened successfully");
+                } catch (error) {
+                    console.error("Error opening terminal:", error);
+                    alert("Une erreur s'est produite lors de l'ouverture du terminal. Veuillez consulter la console pour plus de détails.");
+                }
+                
+                // Add tab hint if not already added
+                if (!document.querySelector('.tab-hint')) {
+                    const tabHint = document.createElement('div');
+                    tabHint.className = 'tab-hint';
+                    tabHint.innerHTML = 'Press <span class="badge badge-info">Tab</span>';
+                    document.getElementById('terminal-input-line').appendChild(tabHint);
+                }
             });
             
             // Close terminal
             closeTerminalBtn.addEventListener('click', function() {
-                terminalOverlay.classList.add('hidden');
+                console.log("Closing terminal...");
+                try {
+                    terminalOverlay.classList.add('hidden');
+                    console.log("Terminal closed successfully");
+                } catch (error) {
+                    console.error("Error closing terminal:", error);
+                }
             });
             
             // Helper function to handle command "ls deployments"
             function handleDirectoryListing(path) {
                 if (path === "deployments") {
-                    return `demo-app/
-api-gateway/
-frontend/
-backend/
-monitoring/
-README.md`;
+                    return `<span class="file-dir">demo-app/</span>
+<span class="file-dir">api-gateway/</span>
+<span class="file-dir">frontend/</span>
+<span class="file-dir">backend/</span>
+<span class="file-dir">monitoring/</span>
+<span class="file-txt">README.md</span>`;
                 }
                 return `Error: Directory not found: ${path}`;
             }
@@ -1190,8 +2119,8 @@ README.md`;
                     
                     // Determine what type of completion to perform
                     if (parts.length === 1) {
-                        // Complete command
-                        const matchingCommands = availableCommands.filter(cmd => 
+                        // Complete command - filtered by current language
+                        const matchingCommands = getAvailableCommands().filter(cmd => 
                             cmd.startsWith(lastPart.toLowerCase())
                         );
                         
@@ -1217,8 +2146,8 @@ README.md`;
                             }
                         }
                     } else if ((parts[0] === 'cat' || parts[0] === 'find') && parts.length === 2) {
-                        // Complete file names
-                        const matchingFiles = availableFiles.filter(file => 
+                        // Complete file names - filtered by current language
+                        const matchingFiles = getAvailableFiles().filter(file => 
                             file.startsWith(lastPart.toLowerCase())
                         );
                         
@@ -1298,18 +2227,6 @@ README.md`;
                 }
             });
             
-            // Helper function to print to terminal
-            function printToTerminal(text) {
-                const output = document.createElement('div');
-                output.innerHTML = text;
-                terminalOutput.appendChild(output);
-                
-                // Add spacing
-                const spacer = document.createElement('div');
-                spacer.classList.add('terminal-spacer');
-                terminalOutput.appendChild(spacer);
-            }
-            
             // Helper functions for CV data display
             function displaySkills() {
                 let output = currentLanguage === 'en' ? "## Technical Skills\n\n" : "## Compétences Techniques\n\n";
@@ -1355,6 +2272,7 @@ README.md`;
                     job.highlights.forEach(highlight => {
                         output += `• ${highlight}\n`;
                     });
+                    
                     
                     output += "\n";
                 });
