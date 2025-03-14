@@ -443,6 +443,159 @@
             margin: 8px 0;
             border-left: 3px solid #89b4fa;
         }
+        
+        /* Additional CSS for terminal size */
+        const style = document.createElement('style');
+        style.textContent = `
+        #terminal-container {
+            width: 85% !important;
+            height: 80% !important;
+            max-width: 1200px !important;
+            background-color: #1e1e2e;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: terminal-appear 0.3s ease-out;
+            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        }
+        
+        #snake-game {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        /* Responsive styles for terminal */
+        @media (max-width: 1200px) {
+            #terminal-container {
+                width: 90% !important;
+                height: 85% !important;
+            }
+        }
+        
+        @media (max-width: 992px) {
+            #terminal-container {
+                width: 92% !important;
+                max-width: none !important;
+            }
+            
+            #terminal-header .control-buttons {
+                width: 70px;
+            }
+            
+            #snake-game {
+                max-width: 600px !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            #terminal-container {
+                width: 95% !important;
+                height: 90% !important;
+                border-radius: 8px;
+            }
+            
+            #terminal-header span {
+                font-size: 0.8rem;
+            }
+            
+            #terminal-output, #terminal-input {
+                font-size: 0.85rem;
+            }
+            
+            .command-section {
+                font-size: 1rem;
+            }
+            
+            #snake-game {
+                max-width: 450px !important;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            #terminal-container {
+                width: 98% !important;
+                height: 95% !important;
+                border-radius: 6px;
+            }
+            
+            #terminal-header {
+                padding: 8px 12px;
+            }
+            
+            #terminal-header span {
+                font-size: 0.75rem;
+            }
+            
+            #terminal-output, #terminal-input {
+                font-size: 0.8rem;
+                padding: 8px;
+            }
+            
+            .prompt {
+                font-size: 0.75rem;
+            }
+            
+            #terminal-input-line {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            #snake-game {
+                max-width: 300px !important;
+            }
+            
+            .tab-hint {
+                display: none;
+            }
+            
+            /* Adjust command output for better mobile reading */
+            .file-json, .file-txt, .file-dir {
+                display: block;
+                margin-bottom: 3px;
+            }
+            
+            /* Condensed help display for mobile */
+            .command-section {
+                font-size: 0.9rem;
+                margin: 10px 0 5px;
+            }
+            
+            /* Adjust badges for mobile */
+            .badge {
+                padding: 2px 4px;
+                font-size: 0.7rem;
+            }
+        }
+        
+        /* Special adjustments for very small screens */
+        @media (max-width: 375px) {
+            #terminal-output, #terminal-input {
+                font-size: 0.75rem;
+                padding: 6px;
+            }
+            
+            #terminal-header .control-buttons {
+                width: 50px;
+            }
+            
+            #terminal-header span {
+                font-size: 0.7rem;
+            }
+            
+            #snake-game {
+                max-width: 250px !important;
+            }
+            
+            /* Simplify snake game UI for very small screens */
+            #snake-game div:not(:first-child) {
+                transform: scale(0.9);
+            }
+        }
+        `;
+        document.head.appendChild(style);
     </style>
 </head>
 <body>
@@ -678,414 +831,6 @@
             const terminalInput = document.getElementById('terminal-input');
             const openTerminalBtn = document.getElementById('openTerminal');
             const closeTerminalBtn = document.getElementById('closeTerminal');
-            
-            // Additional CSS for terminal size
-            const style = document.createElement('style');
-            style.textContent = `
-                /* Terminal Main Styles */
-                #terminal-overlay {
-                    background-color: rgba(0, 0, 0, 0.85);
-                    backdrop-filter: blur(5px);
-                    transition: all 0.3s ease;
-                }
-                
-                #terminal-container {
-                    width: 85% !important;
-                    height: 80% !important;
-                    max-width: 1200px !important;
-                    background-color: #1e1e2e;
-                    border-radius: 12px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-                    overflow: hidden;
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    animation: terminal-appear 0.3s ease-out;
-                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-                }
-                
-                #terminal-header {
-                    background: linear-gradient(to right, #2b2b40, #1e1e2e);
-                    padding: 12px 15px;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                }
-                
-                #terminal-header span {
-                    color: #cdd6f4;
-                    font-weight: 600;
-                    font-size: 0.9rem;
-                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-                }
-                
-                #closeTerminal {
-                    background: none;
-                    border: none;
-                    color: #cdd6f4;
-                    font-size: 1rem;
-                    cursor: pointer;
-                    opacity: 0.7;
-                    transition: opacity 0.2s, transform 0.2s;
-                    border-radius: 50%;
-                    width: 24px;
-                    height: 24px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                
-                #closeTerminal:hover {
-                    opacity: 1;
-                    transform: scale(1.1);
-                    background-color: rgba(255, 255, 255, 0.1);
-                }
-                
-                #terminal-output {
-                    height: calc(100% - 70px) !important;
-                    padding: 15px;
-                    overflow-y: auto;
-                    color: #cdd6f4;
-                    line-height: 1.5;
-                    font-size: 0.95rem;
-                }
-                
-                #terminal-output::-webkit-scrollbar {
-                    width: 8px;
-                }
-                
-                #terminal-output::-webkit-scrollbar-track {
-                    background: rgba(0, 0, 0, 0.2);
-                }
-                
-                #terminal-output::-webkit-scrollbar-thumb {
-                    background: rgba(255, 255, 255, 0.15);
-                    border-radius: 4px;
-                }
-                
-                #terminal-output::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255, 255, 255, 0.25);
-                }
-                
-                #terminal-input-line {
-                    display: flex;
-                    align-items: center;
-                    background-color: #1e1e2e;
-                    padding: 10px 15px;
-                    border-top: 1px solid rgba(255, 255, 255, 0.05);
-                }
-                
-                .prompt {
-                    color: #a6e3a1;
-                    font-weight: bold;
-                    margin-right: 10px;
-                    white-space: nowrap;
-                }
-                
-                #terminal-input {
-                    background: transparent;
-                    border: none;
-                    color: #cdd6f4;
-                    font-size: 0.95rem;
-                    font-family: inherit;
-                    flex: 1;
-                    outline: none;
-                    caret-color: #f5c2e7;
-                }
-                
-                .terminal-spacer {
-                    height: 0.3rem;
-                }
-                
-                /* Terminal Color Scheme */
-                .success {
-                    color: #a6e3a1;
-                    font-weight: 500;
-                }
-                
-                .error {
-                    color: #f38ba8;
-                    font-weight: 500;
-                }
-                
-                .warning {
-                    color: #f9e2af;
-                    font-weight: 500;
-                }
-                
-                .info {
-                    color: #89b4fa;
-                    font-weight: 500;
-                }
-                
-                /* Terminal Suggestions */
-                #terminal-suggestions {
-                    padding: 8px 12px;
-                    color: #9399b2;
-                    background-color: rgba(30, 30, 46, 0.8);
-                    border-radius: 6px;
-                    margin-top: 5px;
-                }
-                
-                #terminal-output div.suggestions {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 8px;
-                    margin-top: 5px;
-                }
-                
-                #terminal-output div.suggestions span {
-                    padding: 3px 8px;
-                    background: rgba(137, 180, 250, 0.2);
-                    border-radius: 4px;
-                    color: #cdd6f4;
-                    font-size: 0.9rem;
-                    transition: background 0.2s;
-                }
-                
-                #terminal-output div.suggestions span:hover {
-                    background: rgba(137, 180, 250, 0.3);
-                }
-                
-                /* Terminal Content Styling */
-                #terminal-output a {
-                    color: #89b4fa;
-                    text-decoration: none;
-                }
-                
-                #terminal-output a:hover {
-                    text-decoration: underline;
-                }
-                
-                #terminal-output h1, #terminal-output h2, #terminal-output h3 {
-                    color: #f5c2e7;
-                    margin-top: 1rem;
-                    margin-bottom: 0.5rem;
-                }
-                
-                #terminal-output pre {
-                    background-color: rgba(0, 0, 0, 0.2);
-                    padding: 10px;
-                    border-radius: 6px;
-                    overflow-x: auto;
-                    border-left: 3px solid #89b4fa;
-                }
-                
-                /* Snake Game */
-                #snake-game {
-                    width: 100% !important;
-                    max-width: 800px !important;
-                    margin: 15px auto !important;
-                    padding: 15px !important;
-                    background-color: #181825 !important;
-                    border-radius: 8px !important;
-                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
-                }
-                
-                /* Animations */
-                @keyframes terminal-appear {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-10px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-                
-                @keyframes cursor-blink {
-                    0%, 100% { opacity: 1; }
-                    50% { opacity: 0; }
-                }
-                
-                /* Responsive adjustments */
-                @media (max-width: 768px) {
-                    #terminal-container {
-                        width: 95% !important;
-                        height: 90% !important;
-                    }
-                    
-                    #terminal-header span {
-                        font-size: 0.8rem;
-                    }
-                    
-                    #terminal-output, #terminal-input {
-                        font-size: 0.85rem;
-                    }
-                }
-                
-                /* Style for command prompts */
-                #terminal-output .prompt {
-                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-                    opacity: 0.9;
-                }
-                
-                /* Style for directory and file listings */
-                #terminal-output div:not(:has(span)):not(:has(pre)):not(.terminal-spacer)) {
-                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-                    line-height: 1.6;
-                }
-                
-                /* Style JSON output */
-                #terminal-output div:contains("{") {
-                    font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
-                    white-space: pre-wrap;
-                    background-color: rgba(0, 0, 0, 0.2);
-                    padding: 10px;
-                    border-radius: 6px;
-                    margin: 5px 0;
-                    border-left: 3px solid #fab387;
-                }
-                
-                /* Style for file types in ls command */
-                .file-json {
-                    color: #fab387;
-                    font-weight: 500;
-                }
-                
-                .file-json::before {
-                    content: "󰘦 ";
-                    font-family: "Font Awesome 6 Free";
-                }
-                
-                .file-txt {
-                    color: #a6e3a1;
-                    font-weight: 500;
-                }
-                
-                .file-txt::before {
-                    content: "󰈙 ";
-                    font-family: "Font Awesome 6 Free";
-                }
-                
-                .file-dir {
-                    color: #89b4fa;
-                    font-weight: 500;
-                }
-                
-                .file-dir::before {
-                    content: "󰉋 ";
-                    font-family: "Font Awesome 6 Free";
-                }
-                
-                /* Badge styles */
-                .badge {
-                    display: inline-block;
-                    padding: 3px 6px;
-                    border-radius: 4px;
-                    font-size: 0.8rem;
-                    font-weight: 600;
-                    margin-left: 5px;
-                    vertical-align: middle;
-                }
-                
-                .badge-info {
-                    background-color: rgba(137, 180, 250, 0.2);
-                    color: #89b4fa;
-                }
-                
-                .badge-success {
-                    background-color: rgba(166, 227, 161, 0.2);
-                    color: #a6e3a1;
-                }
-                
-                .badge-warning {
-                    background-color: rgba(249, 226, 175, 0.2);
-                    color: #f9e2af;
-                }
-                
-                .badge-error {
-                    background-color: rgba(243, 139, 168, 0.2);
-                    color: #f38ba8;
-                }
-                
-                /* Typing effect */
-                @keyframes typing {
-                    from { width: 0 }
-                    to { width: 100% }
-                }
-                
-                .typing-effect {
-                    display: inline-block;
-                    overflow: hidden;
-                    border-right: 0.15em solid #f5c2e7;
-                    white-space: nowrap;
-                    animation: 
-                        typing 1.5s steps(30, end),
-                        blink-caret .75s step-end infinite;
-                }
-                
-                @keyframes blink-caret {
-                    from, to { border-color: transparent }
-                    50% { border-color: #f5c2e7 }
-                }
-                
-                /* Tab hint for autocompletion */
-                .tab-hint {
-                    position: absolute;
-                    right: 15px;
-                    bottom: 12px;
-                    font-size: 0.8rem;
-                    color: rgba(205, 214, 244, 0.5);
-                    pointer-events: none;
-                }
-                
-                /* Blinking cursor */
-                .cursor-blink {
-                    display: inline-block;
-                    width: 8px;
-                    height: 16px;
-                    background-color: #f5c2e7;
-                    animation: cursor-blink 1s infinite;
-                    vertical-align: middle;
-                    margin-left: 2px;
-                }
-                
-                /* Progress bar styling for deploy and scan commands */
-                .progress-bar {
-                    height: 8px;
-                    background-color: rgba(255, 255, 255, 0.1);
-                    border-radius: 4px;
-                    margin: 10px 0;
-                    overflow: hidden;
-                }
-                
-                .progress-bar-fill {
-                    height: 100%;
-                    background: linear-gradient(90deg, #a6e3a1, #89b4fa);
-                    border-radius: 4px;
-                    width: 0%;
-                    transition: width 0.5s ease;
-                    animation: progress-pulse 1.5s ease-in-out infinite;
-                }
-                
-                @keyframes progress-pulse {
-                    0% { opacity: 0.8; }
-                    50% { opacity: 1; }
-                    100% { opacity: 0.8; }
-                }
-                
-                /* Command section title */
-                .command-section {
-                    font-size: 1.1rem;
-                    font-weight: 600;
-                    margin: 12px 0 8px;
-                    color: #f5c2e7;
-                    padding-bottom: 5px;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-                }
-                
-                /* Box for content group */
-                .content-box {
-                    background-color: rgba(0, 0, 0, 0.2);
-                    border-radius: 6px;
-                    padding: 10px;
-                    margin: 8px 0;
-                    border-left: 3px solid #89b4fa;
-                }
-            `;
-            document.head.appendChild(style);
             
             // Function to print to terminal
             function printToTerminal(text) {

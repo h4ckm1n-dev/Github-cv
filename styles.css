@@ -748,4 +748,158 @@ section:hover {
     #terminal-overlay {
         padding: 1rem;
     }
+}
+
+/* Terminal Responsive Styles */
+@media (max-width: 1200px) {
+    #terminal-container {
+        width: 90% !important;
+        height: 85% !important;
+    }
+}
+
+@media (max-width: 992px) {
+    #terminal-container {
+        width: 92% !important;
+        max-width: none !important;
+    }
+    
+    #terminal-header .control-buttons {
+        width: 70px;
+    }
+    
+    #snake-game {
+        max-width: 600px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #terminal-container {
+        width: 95% !important;
+        height: 90% !important;
+        border-radius: 8px;
+    }
+    
+    #terminal-header span {
+        font-size: 0.8rem;
+    }
+    
+    #terminal-output, #terminal-input {
+        font-size: 0.85rem;
+    }
+    
+    .command-section {
+        font-size: 1rem;
+    }
+    
+    #snake-game {
+        max-width: 450px !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #terminal-container {
+        width: 98% !important;
+        height: 95% !important;
+        border-radius: 6px;
+    }
+    
+    #terminal-header {
+        padding: 8px 12px;
+    }
+    
+    #terminal-header span {
+        font-size: 0.75rem;
+    }
+    
+    #terminal-output, #terminal-input {
+        font-size: 0.8rem;
+        padding: 8px;
+    }
+    
+    .prompt {
+        font-size: 0.75rem;
+    }
+    
+    #terminal-input-line {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    #snake-game {
+        max-width: 300px !important;
+    }
+    
+    .tab-hint {
+        display: none;
+    }
+    
+    /* Adjust command output for better mobile reading */
+    .file-json, .file-txt, .file-dir {
+        display: block;
+        margin-bottom: 3px;
+    }
+    
+    /* Condensed help display for mobile */
+    .command-section {
+        font-size: 0.9rem;
+        margin: 10px 0 5px;
+    }
+    
+    /* Adjust badges for mobile */
+    .badge {
+        padding: 2px 4px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Special adjustments for very small screens */
+@media (max-width: 375px) {
+    #terminal-output, #terminal-input {
+        font-size: 0.75rem;
+        padding: 6px;
+    }
+    
+    #terminal-header .control-buttons {
+        width: 50px;
+    }
+    
+    #terminal-header span {
+        font-size: 0.7rem;
+    }
+    
+    #snake-game {
+        max-width: 250px !important;
+    }
+    
+    /* Simplify snake game UI for very small screens */
+    #snake-game div:not(:first-child) {
+        transform: scale(0.9);
+    }
+}
+
+/* Styles for mobile terminal button */
+@media (max-width: 768px) {
+    .terminal-button-prominent {
+        width: 100%;
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+    
+    .terminal-section {
+        width: 100%;
+        padding: 0 10px;
+    }
+}
+
+/* Improve terminal scrolling on touch devices */
+@media (hover: none) and (pointer: coarse) {
+    #terminal-output {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+    }
+    
+    #terminal-output::-webkit-scrollbar {
+        width: 6px;
+    }
 } 
