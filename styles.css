@@ -553,4 +553,199 @@ section:hover {
         padding: 5px 10px;
         font-size: 12px;
     }
+}
+
+/* Terminal Styles */
+.terminal-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.terminal-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Nouveau style pour le bouton terminal plus visible */
+.terminal-section {
+    margin-top: 1.5rem;
+}
+
+.terminal-button-prominent {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.terminal-button-prominent::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.7s ease;
+}
+
+.terminal-button-prominent:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #5a51f9, #8f48fc);
+}
+
+.terminal-button-prominent:hover::before {
+    left: 100%;
+}
+
+.terminal-button-prominent i {
+    font-size: 1.1rem;
+}
+
+#terminal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+#terminal-overlay.hidden {
+    display: none;
+}
+
+#terminal-container {
+    width: 100%;
+    max-width: 800px;
+    height: 500px;
+    background-color: #121212;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+}
+
+#terminal-header {
+    background-color: #202020;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #eee;
+    border-bottom: 1px solid #333;
+}
+
+#closeTerminal {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+#closeTerminal:hover {
+    color: #fff;
+}
+
+#terminal-output {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    color: #ddd;
+    white-space: pre-wrap;
+    font-size: 14px;
+    background-color: #1a1a1a;
+}
+
+#terminal-input-line {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+.prompt {
+    color: #8ae234;
+    font-family: 'Courier New', monospace;
+    margin-right: 0.5rem;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+#terminal-input {
+    flex: 1;
+    background: none;
+    border: none;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    outline: none;
+}
+
+.terminal-spacer {
+    height: 0.5rem;
+}
+
+/* Style highlight colors for terminal output */
+#terminal-output a {
+    color: #729fcf;
+    text-decoration: underline;
+}
+
+#terminal-output .error {
+    color: #cc0000;
+}
+
+#terminal-output .success {
+    color: #8ae234;
+}
+
+/* Responsive Terminal */
+@media (max-width: 768px) {
+    .terminal-button-prominent {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    #terminal-container {
+        height: 80vh;
+    }
+    
+    #terminal-overlay {
+        padding: 1rem;
+    }
 } 

@@ -33,6 +33,11 @@
                 <a href="https://github.com/h4ckm1n-dev" target="_blank"><i class="fab fa-github"></i> GitHub</a>
                 <a href="https://www.linkedin.com/in/julien-mayer-32850b75/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
             </div>
+            <div class="terminal-section">
+                <button id="openTerminal" class="terminal-button-prominent">
+                    <i class="fas fa-terminal"></i> <span data-en="Explore my CV via Terminal" data-fr="Explorer mon CV via Terminal">Explore my CV via Terminal</span>
+                </button>
+            </div>
         </header>
 
         <section id="summary">
@@ -185,6 +190,20 @@
         </footer>
     </div>
 
+    <div id="terminal-overlay" class="hidden">
+        <div id="terminal-container">
+            <div id="terminal-header">
+                <span data-en="Julien Mayer Terminal - CV Explorer" data-fr="Terminal de Julien Mayer - Explorateur de CV">Julien Mayer Terminal - CV Explorer</span>
+                <button id="closeTerminal"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="terminal-output"></div>
+            <div id="terminal-input-line">
+                <span class="prompt">visitor@jmayer-cv:~$</span>
+                <input type="text" id="terminal-input" autofocus>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Language switching functionality
         let currentLanguage = 'en';
@@ -215,6 +234,1169 @@
             document.querySelectorAll('.lang-fr').forEach(el => {
                 el.style.display = 'none';
             });
+        });
+
+        // Terminal functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Terminal setup
+            const terminalOverlay = document.getElementById('terminal-overlay');
+            const terminalOutput = document.getElementById('terminal-output');
+            const terminalInput = document.getElementById('terminal-input');
+            const openTerminalBtn = document.getElementById('openTerminal');
+            const closeTerminalBtn = document.getElementById('closeTerminal');
+            
+            // Additional CSS for terminal size
+            const style = document.createElement('style');
+            style.textContent = `
+                #terminal-container {
+                    width: 85% !important;
+                    height: 80% !important;
+                    max-width: 1200px !important;
+                }
+                #terminal-output {
+                    height: calc(100% - 70px) !important;
+                }
+                #snake-game {
+                    width: 100% !important;
+                    max-width: 800px !important;
+                    margin: 0 auto !important;
+                }
+                
+                /* Terminal suggestions styles */
+                #terminal-suggestions {
+                    padding: 5px;
+                    color: #aaa;
+                }
+                #terminal-output div.suggestions {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 10px;
+                }
+                #terminal-output div.suggestions span {
+                    padding: 2px 5px;
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 3px;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Command history array and current position
+            let commandHistory = [];
+            let historyPosition = -1;
+            
+            // Available commands for autocompletion
+            const availableCommands = [
+                'help', 'clear', 'ls', 'cat', 'find', 'whoami', 'scan', 'deploy',
+                'skills', 'competences', 'soft-skills', 'competences-perso', 
+                'languages', 'langues', 'experience', 'projects', 'projets',
+                'contact', 'summary', 'resume', 'fr', 'en', 'exit', 'snake'
+            ];
+            
+            // Available files for autocompletion
+            const availableFiles = [
+                'experience.json', 'skills.json', 'soft-skills.json', 'languages.json',
+                'projects.json', 'summary.txt', 'contact.txt', 'scan_targets.txt',
+                'competences.json', 'competences-perso.json', 'langues.json', 
+                'projets.json', 'resume.txt', 'cibles_scan.txt', 'deployments/'
+            ];
+            
+            // Available directories
+            const availableDirectories = {
+                'deployments': ['demo-app/', 'api-gateway/', 'frontend/', 'backend/', 'monitoring/', 'README.md']
+            };
+            
+            // CV data for terminal commands
+            const cvData = {
+                skills: [
+                    { category: "Containers & Orchestration", items: ["Docker", "Kubernetes", "ArgoCD", "Helm"] },
+                    { category: "CI/CD & Automation", items: ["GitLab CI", "Ansible", "Bash", "Python", "GitHub Actions"] },
+                    { category: "Security", items: ["Trivy", "Kyverno", "SAST/DAST", "OPA", "Vulnerability Management"] },
+                    { category: "Monitoring & Logs", items: ["Grafana", "Loki", "Prometheus", "Elastic Stack"] },
+                    { category: "Cloud & Infrastructure", items: ["Linux", "Terraform", "AWS", "Azure", "GCP"] },
+                    { category: "Version Control & Deployments", items: ["GitOps", "Renovate", "Git"] }
+                ],
+                experience: [
+                    { 
+                        title: "DevOps Engineer – Onepoint", 
+                        period: "Jan 2024 - Oct 2024",
+                        location: "Rennes, France",
+                        highlights: [
+                            "Automated infrastructure provisioning and CI/CD workflows using Bash scripting, improving deployment time by 40%.",
+                            "Integrated ArgoCD with GitOps for Kubernetes deployments, improving reliability and enabling seamless rollbacks.",
+                            "Deployed monitoring solutions (Grafana, Loki) for comprehensive system and application observability.",
+                            "Automated dependency updates with Renovate to ensure regular component upgrades and patch management.",
+                            "Secured Docker images using Trivy, developing an automated security report in Python.",
+                            "Implemented Kyverno for enforcing security policies in Kubernetes clusters, ensuring compliance with organizational security standards."
+                        ]
+                    },
+                    { 
+                        title: "Network Operations Center Engineer – Inetum", 
+                        period: "Nov 2022 - Nov 2023",
+                        location: "Rennes, France",
+                        highlights: [
+                            "Managed daily operations of critical infrastructure, ensuring 99.9% platform reliability.",
+                            "Administered Linux systems, Docker containers, and Kubernetes clusters.",
+                            "Automated processes with Ansible and optimized workflows using Bash/Python scripting.",
+                            "Implemented monitoring solutions using Grafana and Prometheus to improve system observability.",
+                            "Collaborated with cross-functional teams to troubleshoot and resolve infrastructure issues."
+                        ]
+                    },
+                    { 
+                        title: "System Administrator & Technician – Info Pro Services", 
+                        period: "2011 - 2015",
+                        location: "Dinan, France",
+                        highlights: [
+                            "Managed an IT infrastructure of over 200 client workstations (Windows 7/8) and 15 servers (Windows Server 2008/2012).",
+                            "Administered Active Directory, Group Policies (GPO), and access rights for 5 client companies.",
+                            "Configured and maintained email solutions (Exchange Server) and file sharing services (Windows File Server).",
+                            "Implemented and managed backup and disaster recovery solutions (Veeam Backup, Acronis).",
+                            "Ensured infrastructure monitoring with tools such as PRTG Network Monitor and Nagios.",
+                            "Deployed virtualization solutions (Hyper-V, VMware) to optimize server resources.",
+                            "Performed Windows domain migrations and operating system upgrades.",
+                            "Installed and configured network equipment (routers, firewalls, switches) to ensure secure connectivity.",
+                            "Trained users and documented technical procedures to facilitate troubleshooting."
+                        ]
+                    }
+                ],
+                projects: [
+                    {
+                        name: "kube-utils-nvim",
+                        description: "A specialized Neovim plugin for managing and interacting with Kubernetes clusters directly from the editor, optimizing daily DevOps workflow.",
+                        github: "https://github.com/h4ckm1n-dev/kube-utils-nvim"
+                    }
+                ],
+                softSkills: [
+                    "Resilience",
+                    "Communication",
+                    "Proactivity",
+                    "Problem-solving"
+                ],
+                languages: [
+                    { language: "French", level: "Native" },
+                    { language: "English", level: "Fluent" }
+                ]
+            };
+            
+            // Available commands
+            const commands = {
+                help: function() {
+                    return currentLanguage === 'en' ? 
+                    `Available commands:
+  help                  Display this help message
+  clear                 Clear the terminal
+  ls                    List available categories
+  cat <file>            Display content of a file (experience, skills, projects)
+  find <keyword>        Search for a keyword in the CV
+  whoami                Display basic info about Julien Mayer
+  scan [target]         Run a simulated security scan on a target (default: all)
+  deploy [app]          Deploy an application to Kubernetes cluster (demo)
+  skills                Display my technical skills
+  soft-skills           Show my personal skills
+  languages             Display languages I speak
+  experience            Show my work experience
+  projects              List my personal projects
+  contact               Display my contact information
+  summary               Show my professional summary
+  fr / en               Switch language to French / English
+  snake                 Play a game of Snake in the terminal
+  exit                  Close the terminal` :
+                    `Commandes disponibles:
+  help                  Afficher ce message d'aide
+  clear                 Effacer le terminal
+  ls                    Lister les catégories disponibles
+  cat <fichier>         Afficher le contenu d'un fichier (experience, skills, projects)
+  find <mot-clé>        Rechercher un mot-clé dans le CV
+  whoami                Afficher les informations de base sur Julien Mayer
+  scan [cible]          Exécuter un scan de sécurité simulé sur une cible (par défaut: all)
+  deploy [app]          Déployer une application sur un cluster Kubernetes (démo)
+  competences           Afficher mes compétences techniques
+  competences-perso     Afficher mes compétences personnelles
+  langues               Afficher les langues que je parle
+  experience            Montrer mon expérience professionnelle
+  projets               Lister mes projets personnels
+  contact               Afficher mes coordonnées
+  resume                Afficher mon résumé professionnel
+  fr / en               Changer la langue en français / anglais
+  snake                 Jouer au jeu Snake dans le terminal
+  exit                  Fermer le terminal`;
+                },
+                ls: function() {
+                    return currentLanguage === 'en' ?
+                    `experience.json
+skills.json
+soft-skills.json
+languages.json
+projects.json
+summary.txt
+contact.txt
+scan_targets.txt
+deployments/` :
+                    `experience.json
+competences.json
+competences-perso.json
+langues.json
+projets.json
+resume.txt
+contact.txt
+cibles_scan.txt
+deployments/`;
+                },
+                cat: function(args) {
+                    if (!args.length) return currentLanguage === 'en' ? "Error: file name required" : "Erreur: nom de fichier requis";
+                    
+                    // Handle French file names
+                    let fileName = args[0];
+                    if (currentLanguage === 'fr') {
+                        if (fileName === 'competences.json') fileName = 'skills.json';
+                        if (fileName === 'competences-perso.json') fileName = 'soft-skills.json';
+                        if (fileName === 'langues.json') fileName = 'languages.json';
+                        if (fileName === 'projets.json') fileName = 'projects.json';
+                        if (fileName === 'resume.txt') fileName = 'summary.txt';
+                        if (fileName === 'cibles_scan.txt') fileName = 'scan_targets.txt';
+                    }
+                    
+                    switch(fileName) {
+                        case "experience.json":
+                            return JSON.stringify(cvData.experience, null, 2);
+                        case "skills.json":
+                            return JSON.stringify(cvData.skills, null, 2);
+                        case "soft-skills.json":
+                            return JSON.stringify(cvData.softSkills, null, 2);
+                        case "languages.json":
+                            return JSON.stringify(cvData.languages, null, 2);
+                        case "projects.json":
+                            return JSON.stringify(cvData.projects, null, 2);
+                        case "summary.txt":
+                            return document.querySelector("#summary p").getAttribute(`data-${currentLanguage}`);
+                        case "contact.txt":
+                            return `Email: mayer.julien22@gmail.com
+Phone: +33 783 531 926
+Location: Dinan, France
+GitHub: https://github.com/h4ckm1n-dev
+LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
+                        case "scan_targets.txt":
+                            return currentLanguage === 'en' ?
+                            `Available scan targets:
+1. docker_images    - Scan container images for vulnerabilities
+2. k8s_cluster      - Audit Kubernetes configurations
+3. infrastructure   - Check for infrastructure misconfigurations
+4. ci_pipeline      - Analyze CI/CD security
+5. all              - Run all scans (default)` :
+                            `Cibles de scan disponibles:
+1. docker_images    - Scanner les images de conteneurs pour les vulnérabilités
+2. k8s_cluster      - Auditer les configurations Kubernetes
+3. infrastructure   - Vérifier les mauvaises configurations d'infrastructure
+4. ci_pipeline      - Analyser la sécurité du pipeline CI/CD
+5. all              - Exécuter tous les scans (par défaut)`;
+                        case "deployments/":
+                            return currentLanguage === 'en' ? 
+                                `This is a directory. Use 'ls deployments' to list its contents.` : 
+                                `Ceci est un répertoire. Utilisez 'ls deployments' pour lister son contenu.`;
+                        default:
+                            return currentLanguage === 'en' ? 
+                                `Error: ${args[0]}: No such file or directory` : 
+                                `Erreur: ${args[0]}: Aucun fichier ou répertoire de ce type`;
+                    }
+                },
+                whoami: function() {
+                    return currentLanguage === 'en' ?
+                    `Julien Mayer
+DevOps Engineer
+Location: Dinan, France
+-------------------
+"DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management."` :
+                    `Julien Mayer
+Ingénieur DevOps
+Localisation: Dinan, France
+-------------------
+"Ingénieur DevOps avec une forte expertise en automatisation, sécurité et gestion d'infrastructures cloud-native."`;
+                },
+                find: function(args) {
+                    if (!args.length) return currentLanguage === 'en' ? "Error: search term required" : "Erreur: terme de recherche requis";
+                    const term = args[0].toLowerCase();
+                    let results = [];
+                    
+                    // Search in skills
+                    cvData.skills.forEach(category => {
+                        category.items.forEach(skill => {
+                            if (skill.toLowerCase().includes(term)) {
+                                results.push(`skills.json: ${category.category} - ${skill}`);
+                            }
+                        });
+                    });
+                    
+                    // Search in soft skills
+                    cvData.softSkills.forEach(skill => {
+                        if (skill.toLowerCase().includes(term)) {
+                            results.push(`soft-skills.json: ${skill}`);
+                        }
+                    });
+                    
+                    // Search in languages
+                    cvData.languages.forEach(lang => {
+                        if (lang.language.toLowerCase().includes(term) || lang.level.toLowerCase().includes(term)) {
+                            results.push(`languages.json: ${lang.language} (${lang.level})`);
+                        }
+                    });
+                    
+                    // Search in experience
+                    cvData.experience.forEach(job => {
+                        if (job.title.toLowerCase().includes(term)) {
+                            results.push(`experience.json: ${job.title}`);
+                        }
+                        job.highlights.forEach(highlight => {
+                            if (highlight.toLowerCase().includes(term)) {
+                                results.push(`experience.json: ${job.title} - "${highlight.substring(0, 50)}..."`);
+                            }
+                        });
+                    });
+                    
+                    // Search in projects
+                    cvData.projects.forEach(project => {
+                        if (project.name.toLowerCase().includes(term) || 
+                            project.description.toLowerCase().includes(term)) {
+                            results.push(`projects.json: ${project.name}`);
+                        }
+                    });
+                    
+                    return results.length ? results.join('\n') : currentLanguage === 'en' ? `No results found for "${term}"` : `Aucun résultat trouvé pour "${term}"`;
+                },
+                // Nouvelles commandes pour l'exploration du CV
+                skills: function() {
+                    // Alias pour compétences en français
+                    return displaySkills();
+                },
+                competences: function() {
+                    // Version française de la commande skills
+                    return displaySkills();
+                },
+                "soft-skills": function() {
+                    // Alias pour compétences personnelles en français
+                    return displaySoftSkills();
+                },
+                "competences-perso": function() {
+                    // Version française de la commande soft-skills
+                    return displaySoftSkills();
+                },
+                languages: function() {
+                    // Alias pour langues en français
+                    return displayLanguages();
+                },
+                langues: function() {
+                    // Version française de la commande languages
+                    return displayLanguages();
+                },
+                experience: function() {
+                    return displayExperience();
+                },
+                projects: function() {
+                    // Alias pour projets en français
+                    return displayProjects();
+                },
+                projets: function() {
+                    // Version française de la commande projects
+                    return displayProjects();
+                },
+                contact: function() {
+                    return currentLanguage === 'en' ?
+                    `Contact Information:
+    
+Email: mayer.julien22@gmail.com
+Phone: +33 783 531 926
+Location: Dinan, France
+GitHub: https://github.com/h4ckm1n-dev
+LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/` :
+                    `Coordonnées:
+    
+Email: mayer.julien22@gmail.com
+Téléphone: +33 783 531 926
+Localisation: Dinan, France
+GitHub: https://github.com/h4ckm1n-dev
+LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
+                },
+                summary: function() {
+                    // Alias pour resume en français
+                    return document.querySelector("#summary p").getAttribute(`data-${currentLanguage}`);
+                },
+                resume: function() {
+                    // Version française de la commande summary
+                    return document.querySelector("#summary p").getAttribute(`data-${currentLanguage}`);
+                },
+                fr: function() {
+                    if (currentLanguage !== 'fr') {
+                        currentLanguage = 'fr';
+                        document.documentElement.setAttribute('lang', 'fr');
+                        updateContent();
+                        return "Langue changée en français.";
+                    }
+                    return "La langue est déjà en français.";
+                },
+                en: function() {
+                    if (currentLanguage !== 'en') {
+                        currentLanguage = 'en';
+                        document.documentElement.setAttribute('lang', 'en');
+                        updateContent();
+                        return "Language changed to English.";
+                    }
+                    return "Language is already set to English.";
+                },
+                // Commandes existantes
+                scan: function(args) {
+                    const target = args.length ? args[0] : "all";
+                    let results = "";
+                    
+                    // Start scan with animated progress
+                    printToTerminal(`<span class="success">[+] Starting security scan on target: ${target}</span>`);
+                    
+                    // Simulate scan process with delay
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Initializing scan environment...</span>`);
+                    }, 500);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Loading security policies and vulnerability database...</span>`);
+                    }, 1200);
+                    
+                    setTimeout(() => {
+                        if (target === "all" || target === "docker_images") {
+                            printToTerminal(`<span>[*] Scanning Docker images for vulnerabilities...</span>`);
+                            setTimeout(() => {
+                                printToTerminal(`<span class="success">[+] Found 3 container images:</span>
+  - nginx:1.23.1 [<span class="success">✓</span>]
+  - python:3.9-slim [<span class="error">✗</span> CVE-2023-24329 - Medium]
+  - postgres:14.5 [<span class="success">✓</span>]`);
+                            }, 800);
+                        }
+                    }, 2000);
+                    
+                    setTimeout(() => {
+                        if (target === "all" || target === "k8s_cluster") {
+                            printToTerminal(`<span>[*] Auditing Kubernetes configurations...</span>`);
+                            setTimeout(() => {
+                                printToTerminal(`<span class="success">[+] Kubernetes security audit:</span>
+  - Pod Security Standards: <span class="success">Passed</span>
+  - RBAC Configuration: <span class="success">Secure</span>
+  - Network Policies: <span class="error">Warning - Default allow policy detected</span>
+  - Secrets Management: <span class="success">Using Vault integration</span>`);
+                            }, 1200);
+                        }
+                    }, 3500);
+                    
+                    setTimeout(() => {
+                        if (target === "all" || target === "infrastructure") {
+                            printToTerminal(`<span>[*] Checking infrastructure configurations...</span>`);
+                            setTimeout(() => {
+                                printToTerminal(`<span class="success">[+] Infrastructure audit:</span>
+  - IAM Permissions: <span class="success">Principle of least privilege confirmed</span>
+  - Encryption: <span class="success">At-rest and in-transit encryption enabled</span>
+  - Public Access: <span class="error">Warning - S3 bucket 'logs-backup' publicly accessible</span>
+  - Security Groups: <span class="success">Properly configured</span>`);
+                            }, 1000);
+                        }
+                    }, 5500);
+                    
+                    setTimeout(() => {
+                        if (target === "all" || target === "ci_pipeline") {
+                            printToTerminal(`<span>[*] Analyzing CI/CD pipeline security...</span>`);
+                            setTimeout(() => {
+                                printToTerminal(`<span class="success">[+] CI/CD security analysis:</span>
+  - Secrets Management: <span class="success">Using GitLab CI/CD protected variables</span>
+  - SAST Integration: <span class="success">SonarQube running on all PRs</span>
+  - Container Scanning: <span class="success">Trivy integrated in pipeline</span>
+  - Dependency Scanning: <span class="success">Using OWASP Dependency Check</span>`);
+                            }, 1200);
+                        }
+                    }, 7000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span class="success">[+] Security scan completed!</span>
+<span>[*] Summary:</span>
+  - <span class="success">9 checks passed</span>
+  - <span class="error">2 warnings found</span>
+  - <span class="error">1 vulnerability detected</span>
+
+<span>[*] Recommended actions:</span>
+  - Update python:3.9-slim image to latest patch
+  - Implement default-deny network policies in Kubernetes
+  - Remove public access from 'logs-backup' S3 bucket
+
+<span class="success">[+] Full scan report would be sent to security@example.com in a real environment</span>`);
+                    }, 9000);
+                    
+                    return "Initiating security scan, please wait...";
+                },
+                deploy: function(args) {
+                    const app = args.length ? args[0] : "demo-app";
+                    
+                    printToTerminal(`<span class="success">[+] Starting deployment of "${app}" to Kubernetes cluster...</span>`);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Validating Kubernetes manifest...</span>`);
+                    }, 500);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Building container image: ${app}:v1.0.4...</span>`);
+                    }, 1500);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span class="success">[+] Container build successful!</span>
+<span>[*] Docker image details:</span>
+  - Name: ${app}:v1.0.4
+  - Size: 156MB
+  - Layers: 8
+  - Base: alpine:3.16
+  - Security scan: <span class="success">Passed</span>`);
+                    }, 3000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Pushing image to container registry...</span>`);
+                    }, 4000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span class="success">[+] Image pushed successfully to registry.example.com/${app}:v1.0.4</span>`);
+                    }, 5000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Applying Kubernetes manifests with kubectl...</span>`);
+                    }, 6000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span class="success">[+] Kubernetes resources created:</span>
+  - Deployment/${app}
+  - Service/${app}
+  - Ingress/${app}
+  - ConfigMap/${app}-config
+  - Secret/${app}-secrets`);
+                    }, 7000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span>[*] Waiting for pods to be ready...</span>`);
+                    }, 8000);
+                    
+                    setTimeout(() => {
+                        // ASCII representation of pods
+                        printToTerminal(`<span class="success">[+] Pods are running:</span>
+
+ +-------------------------------------------------------------------------+
+ |                                                                         |
+ |    KUBERNETES CLUSTER                                                   |
+ |    +-----------------------------------------------------------------+  |
+ |    |                                                                 |  |
+ |    |    NAMESPACE: production                                        |  |
+ |    |                                                                 |  |
+ |    |    +---------------------+      +---------------------+         |  |
+ |    |    |                     |      |                     |         |  |
+ |    |    |   <span class="success">●</span> ${app}-76d8f4b58c-1 |      |   <span class="success">●</span> ${app}-76d8f4b58c-3 |         |  |
+ |    |    |      <span class="success">RUNNING</span>         |      |      <span class="success">RUNNING</span>         |         |  |
+ |    |    |                     |      |                     |         |  |
+ |    |    +---------------------+      +---------------------+         |  |
+ |    |                                                                 |  |
+ |    |    +---------------------+      +---------------------+         |  |
+ |    |    |                     |      |                     |         |  |
+ |    |    |   <span class="success">●</span> ${app}-76d8f4b58c-2 |      |   <span class="success">●</span> ${app}-76d8f4b58c-4 |         |  |
+ |    |    |      <span class="success">RUNNING</span>         |      |      <span class="success">RUNNING</span>         |         |  |
+ |    |    |                     |      |                     |         |  |
+ |    |    +---------------------+      +---------------------+         |  |
+ |    |                                                                 |  |
+ |    +-----------------------------------------------------------------+  |
+ |                                                                         |
+ +-------------------------------------------------------------------------+
+`);
+                    }, 10000);
+                    
+                    setTimeout(() => {
+                        printToTerminal(`<span class="success">[+] Application deployed successfully!</span>
+<span>[*] Deployment details:</span>
+  - Replicas: 4/4 ready
+  - Strategy: RollingUpdate (maxSurge: 25%, maxUnavailable: 25%)
+  - Image: registry.example.com/${app}:v1.0.4
+  - Ports: 80 TCP, 443 TCP
+  - Health: Readiness and Liveness probes configured
+  - URL: https://${app}.example.com
+
+<span class="success">[+] Deployment completed in 10.2 seconds</span>`);
+                    }, 12000);
+                    
+                    return "Starting deployment process, please wait...";
+                },
+                education: function() {
+                    // Alias pour formation en français
+                    return displayEducation();
+                },
+                formation: function() {
+                    // Version française de la commande education
+                    return displayEducation();
+                },
+                snake: function() {
+                    // Start game message
+                    const startMessage = currentLanguage === 'en' ? 
+                        "Starting Snake game... Use arrow keys to move, 'q' to quit" : 
+                        "Démarrage du jeu Snake... Utilisez les flèches pour vous déplacer, 'q' pour quitter";
+                    
+                    printToTerminal(startMessage);
+                    
+                    // Create a game container
+                    const gameContainer = document.createElement('div');
+                    gameContainer.id = 'snake-game';
+                    gameContainer.style.fontFamily = 'monospace';
+                    gameContainer.style.lineHeight = '1';
+                    gameContainer.style.padding = '10px';
+                    gameContainer.style.backgroundColor = '#1a1a1a';
+                    gameContainer.style.border = '1px solid #444';
+                    gameContainer.style.borderRadius = '4px';
+                    gameContainer.style.margin = '10px 0';
+                    gameContainer.style.overflow = 'hidden';
+                    gameContainer.style.position = 'relative';
+                    
+                    terminalOutput.appendChild(gameContainer);
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    
+                    // Game variables
+                    const width = 20;
+                    const height = 15;
+                    let snake = [{x: 10, y: 8}, {x: 9, y: 8}, {x: 8, y: 8}];
+                    let food = {x: 15, y: 8};
+                    let direction = 'right';
+                    let nextDirection = 'right';
+                    let gameOver = false;
+                    let score = 0;
+                    let speed = 200;
+                    
+                    // Create game board
+                    const board = document.createElement('div');
+                    board.style.width = `${width * 1.2}em`;
+                    board.style.height = `${height * 1.2}em`;
+                    board.style.position = 'relative';
+                    gameContainer.appendChild(board);
+                    
+                    // Create score display
+                    const scoreDisplay = document.createElement('div');
+                    scoreDisplay.style.marginTop = '10px';
+                    scoreDisplay.style.color = '#4CAF50';
+                    scoreDisplay.style.fontWeight = 'bold';
+                    gameContainer.appendChild(scoreDisplay);
+                    
+                    // Function to render the game
+                    function render() {
+                        // Clear board
+                        board.innerHTML = '';
+                        
+                        // Create board background
+                        for (let y = 0; y < height; y++) {
+                            for (let x = 0; x < width; x++) {
+                                const cell = document.createElement('div');
+                                cell.style.position = 'absolute';
+                                cell.style.left = `${x * 1.2}em`;
+                                cell.style.top = `${y * 1.2}em`;
+                                cell.style.width = '1em';
+                                cell.style.height = '1em';
+                                cell.style.color = '#333';
+                                cell.textContent = '·';
+                                board.appendChild(cell);
+                            }
+                        }
+                        
+                        // Draw food
+                        const foodElement = document.createElement('div');
+                        foodElement.style.position = 'absolute';
+                        foodElement.style.left = `${food.x * 1.2}em`;
+                        foodElement.style.top = `${food.y * 1.2}em`;
+                        foodElement.style.width = '1em';
+                        foodElement.style.height = '1em';
+                        foodElement.style.color = '#E91E63';
+                        foodElement.textContent = '●';
+                        board.appendChild(foodElement);
+                        
+                        // Draw snake
+                        snake.forEach((segment, index) => {
+                            const snakePart = document.createElement('div');
+                            snakePart.style.position = 'absolute';
+                            snakePart.style.left = `${segment.x * 1.2}em`;
+                            snakePart.style.top = `${segment.y * 1.2}em`;
+                            snakePart.style.width = '1em';
+                            snakePart.style.height = '1em';
+                            snakePart.style.color = index === 0 ? '#4CAF50' : '#8BC34A';
+                            snakePart.textContent = index === 0 ? '█' : '▓';
+                            board.appendChild(snakePart);
+                        });
+                        
+                        // Update score
+                        scoreDisplay.textContent = currentLanguage === 'en' ? 
+                            `Score: ${score} | Press 'q' to quit` : 
+                            `Score: ${score} | Appuyez sur 'q' pour quitter`;
+                    }
+                    
+                    // Function to move the snake
+                    function moveSnake() {
+                        if (gameOver) return;
+                        
+                        // Update direction
+                        direction = nextDirection;
+                        
+                        // Calculate new head position
+                        const head = {...snake[0]};
+                        switch (direction) {
+                            case 'up': head.y--; break;
+                            case 'down': head.y++; break;
+                            case 'left': head.x--; break;
+                            case 'right': head.x++; break;
+                        }
+                        
+                        // Check for collisions with walls
+                        if (head.x < 0 || head.x >= width || head.y < 0 || head.y >= height) {
+                            endGame();
+                            return;
+                        }
+                        
+                        // Check for collisions with self
+                        for (let i = 0; i < snake.length; i++) {
+                            if (snake[i].x === head.x && snake[i].y === head.y) {
+                                endGame();
+                                return;
+                            }
+                        }
+                        
+                        // Add new head
+                        snake.unshift(head);
+                        
+                        // Check if food eaten
+                        if (head.x === food.x && head.y === food.y) {
+                            // Increase score
+                            score += 10;
+                            // Generate new food
+                            generateFood();
+                            // Speed up
+                            if (speed > 70) speed -= 5;
+                        } else {
+                            // Remove tail
+                            snake.pop();
+                        }
+                        
+                        // Render game
+                        render();
+                        
+                        // Continue game loop
+                        gameInterval = setTimeout(moveSnake, speed);
+                    }
+                    
+                    // Function to generate food
+                    function generateFood() {
+                        // Find a free spot for the food
+                        let valid = false;
+                        while (!valid) {
+                            food = {
+                                x: Math.floor(Math.random() * width),
+                                y: Math.floor(Math.random() * height)
+                            };
+                            
+                            valid = true;
+                            for (let i = 0; i < snake.length; i++) {
+                                if (snake[i].x === food.x && snake[i].y === food.y) {
+                                    valid = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Function to end the game
+                    function endGame() {
+                        gameOver = true;
+                        clearTimeout(gameInterval);
+                        
+                        // Show game over message
+                        const gameOverMessage = document.createElement('div');
+                        gameOverMessage.style.position = 'absolute';
+                        gameOverMessage.style.top = '50%';
+                        gameOverMessage.style.left = '50%';
+                        gameOverMessage.style.transform = 'translate(-50%, -50%)';
+                        gameOverMessage.style.backgroundColor = 'rgba(0,0,0,0.8)';
+                        gameOverMessage.style.padding = '20px';
+                        gameOverMessage.style.borderRadius = '5px';
+                        gameOverMessage.style.color = '#fff';
+                        gameOverMessage.style.textAlign = 'center';
+                        gameOverMessage.style.fontSize = '16px';
+                        gameOverMessage.innerHTML = currentLanguage === 'en' ? 
+                            `Game Over!<br>Your score: ${score}<br>Press any key to continue` : 
+                            `Partie terminée !<br>Votre score : ${score}<br>Appuyez sur n'importe quelle touche pour continuer`;
+                        
+                        board.appendChild(gameOverMessage);
+                        
+                        // Re-enable terminal input
+                        document.removeEventListener('keydown', handleGameControls);
+                        terminalInput.focus();
+                        
+                        // Add a message to the terminal
+                        const finalMessage = document.createElement('div');
+                        finalMessage.innerHTML = currentLanguage === 'en' ? 
+                            `<span style="color: #E91E63;">Game Over! Your score: ${score}</span>` : 
+                            `<span style="color: #E91E63;">Partie terminée ! Votre score : ${score}</span>`;
+                        terminalOutput.appendChild(finalMessage);
+                        
+                        // Add spacing
+                        const spacer = document.createElement('div');
+                        spacer.classList.add('terminal-spacer');
+                        terminalOutput.appendChild(spacer);
+                        
+                        // Scroll to ensure the game and message are visible
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    }
+                    
+                    // Handle keyboard controls
+                    function handleGameControls(e) {
+                        // Prevent default action (scrolling, etc)
+                        e.preventDefault();
+                        
+                        // Exit the game if 'q' is pressed
+                        if (e.key === 'q') {
+                            clearTimeout(gameInterval);
+                            document.removeEventListener('keydown', handleGameControls);
+                            
+                            // Add a message to the terminal
+                            const quitMessage = document.createElement('div');
+                            quitMessage.innerHTML = currentLanguage === 'en' ? 
+                                `<span style="color: #999;">Game exited. Your score: ${score}</span>` : 
+                                `<span style="color: #999;">Jeu quitté. Votre score : ${score}</span>`;
+                            terminalOutput.appendChild(quitMessage);
+                            
+                            // Add spacing
+                            const spacer = document.createElement('div');
+                            spacer.classList.add('terminal-spacer');
+                            terminalOutput.appendChild(spacer);
+                            
+                            // Re-enable terminal input
+                            terminalInput.focus();
+                            terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                            return;
+                        }
+                        
+                        // Game over state - any key restarts
+                        if (gameOver) {
+                            document.removeEventListener('keydown', handleGameControls);
+                            terminalInput.focus();
+                            return;
+                        }
+                        
+                        // Update direction based on key
+                        switch(e.key) {
+                            case 'ArrowUp':
+                                if (direction !== 'down') nextDirection = 'up';
+                                break;
+                            case 'ArrowDown':
+                                if (direction !== 'up') nextDirection = 'down';
+                                break;
+                            case 'ArrowLeft':
+                                if (direction !== 'right') nextDirection = 'left';
+                                break;
+                            case 'ArrowRight':
+                                if (direction !== 'left') nextDirection = 'right';
+                                break;
+                        }
+                    }
+                    
+                    // Start the game
+                    let gameInterval;
+                    
+                    // Initial render
+                    render();
+                    
+                    // Set up event listener for game controls
+                    document.addEventListener('keydown', handleGameControls);
+                    
+                    // Disable terminal input while playing
+                    terminalInput.blur();
+                    
+                    // Start game loop
+                    gameInterval = setTimeout(moveSnake, speed);
+                    
+                    return "Snake game initialized. Use arrow keys to control the snake.";
+                }
+            };
+            
+            // Open terminal
+            openTerminalBtn.addEventListener('click', function() {
+                terminalOverlay.classList.remove('hidden');
+                terminalInput.focus();
+                
+                // Welcome message
+                printToTerminal(`<span style="color: #8ae234;">Welcome to Julien Mayer's interactive CV terminal!</span>
+Type <span style="color: #729fcf;">help</span> to see available commands.
+`);
+            });
+            
+            // Close terminal
+            closeTerminalBtn.addEventListener('click', function() {
+                terminalOverlay.classList.add('hidden');
+            });
+            
+            // Helper function to handle command "ls deployments"
+            function handleDirectoryListing(path) {
+                if (path === "deployments") {
+                    return `demo-app/
+api-gateway/
+frontend/
+backend/
+monitoring/
+README.md`;
+                }
+                return `Error: Directory not found: ${path}`;
+            }
+            
+            // Handle terminal input with autocompletion and history
+            terminalInput.addEventListener('keydown', function(e) {
+                // Handle Enter key - Command execution
+                if (e.key === 'Enter') {
+                    const input = terminalInput.value.trim();
+                    
+                    if (input !== '') {
+                        // Add to command history if not empty
+                        commandHistory.push(input);
+                        historyPosition = commandHistory.length;
+                    }
+                    
+                    const cmdArray = input.split(' ');
+                    const cmd = cmdArray[0].toLowerCase();
+                    const args = cmdArray.slice(1);
+                    
+                    // Echo command
+                    printToTerminal(`<span class="prompt">visitor@jmayer-cv:~$</span> ${input}`);
+                    
+                    // Process command
+                    if (input === '') {
+                        // Do nothing for empty command
+                    } else if (cmd === 'clear') {
+                        terminalOutput.innerHTML = '';
+                    } else if (cmd === 'exit') {
+                        terminalOverlay.classList.add('hidden');
+                    } else if (cmd === 'ls' && args.length > 0) {
+                        printToTerminal(handleDirectoryListing(args[0]));
+                    } else if (commands[cmd]) {
+                        printToTerminal(commands[cmd](args));
+                    } else {
+                        printToTerminal(`Error: command not found: ${cmd}`);
+                    }
+                    
+                    // Clear input and scroll to bottom
+                    terminalInput.value = '';
+                    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                }
+                // Handle Tab key - Autocompletion
+                else if (e.key === 'Tab') {
+                    e.preventDefault(); // Prevent focusing to next element
+                    
+                    const input = terminalInput.value.trim();
+                    const parts = input.split(' ');
+                    const lastPart = parts[parts.length - 1];
+                    
+                    // Determine what type of completion to perform
+                    if (parts.length === 1) {
+                        // Complete command
+                        const matchingCommands = availableCommands.filter(cmd => 
+                            cmd.startsWith(lastPart.toLowerCase())
+                        );
+                        
+                        if (matchingCommands.length === 1) {
+                            // Single match, complete it
+                            terminalInput.value = matchingCommands[0];
+                        } else if (matchingCommands.length > 1) {
+                            // Multiple matches, print options
+                            printToTerminal(`<span class="prompt">visitor@jmayer-cv:~$</span> ${input}`);
+                            printToTerminal(matchingCommands.join('  '));
+                            
+                            // If they share common prefix, complete that part
+                            let commonPrefix = matchingCommands[0];
+                            for (let i = 1; i < matchingCommands.length; i++) {
+                                while (!matchingCommands[i].startsWith(commonPrefix) && commonPrefix.length > 0) {
+                                    commonPrefix = commonPrefix.substring(0, commonPrefix.length - 1);
+                                }
+                                if (commonPrefix.length === 0) break;
+                            }
+                            
+                            if (commonPrefix.length > lastPart.length) {
+                                terminalInput.value = commonPrefix;
+                            }
+                        }
+                    } else if ((parts[0] === 'cat' || parts[0] === 'find') && parts.length === 2) {
+                        // Complete file names
+                        const matchingFiles = availableFiles.filter(file => 
+                            file.startsWith(lastPart.toLowerCase())
+                        );
+                        
+                        if (matchingFiles.length === 1) {
+                            // Single match, complete it
+                            parts[parts.length - 1] = matchingFiles[0];
+                            terminalInput.value = parts.join(' ');
+                        } else if (matchingFiles.length > 1) {
+                            // Multiple matches, print options
+                            printToTerminal(`<span class="prompt">visitor@jmayer-cv:~$</span> ${input}`);
+                            printToTerminal(matchingFiles.join('  '));
+                            
+                            // If they share common prefix, complete that part
+                            let commonPrefix = matchingFiles[0];
+                            for (let i = 1; i < matchingFiles.length; i++) {
+                                while (!matchingFiles[i].startsWith(commonPrefix) && commonPrefix.length > 0) {
+                                    commonPrefix = commonPrefix.substring(0, commonPrefix.length - 1);
+                                }
+                                if (commonPrefix.length === 0) break;
+                            }
+                            
+                            if (commonPrefix.length > lastPart.length) {
+                                parts[parts.length - 1] = commonPrefix;
+                                terminalInput.value = parts.join(' ');
+                            }
+                        }
+                    } else if (parts[0] === 'ls' && parts.length === 2) {
+                        // Complete directory names
+                        const matchingDirs = Object.keys(availableDirectories).filter(dir => 
+                            dir.startsWith(lastPart.toLowerCase())
+                        );
+                        
+                        if (matchingDirs.length === 1) {
+                            // Single match, complete it
+                            parts[parts.length - 1] = matchingDirs[0];
+                            terminalInput.value = parts.join(' ');
+                        } else if (matchingDirs.length > 1) {
+                            // Multiple matches, print options
+                            printToTerminal(`<span class="prompt">visitor@jmayer-cv:~$</span> ${input}`);
+                            printToTerminal(matchingDirs.join('  '));
+                            
+                            // If they share common prefix, complete that part
+                            let commonPrefix = matchingDirs[0];
+                            for (let i = 1; i < matchingDirs.length; i++) {
+                                while (!matchingDirs[i].startsWith(commonPrefix) && commonPrefix.length > 0) {
+                                    commonPrefix = commonPrefix.substring(0, commonPrefix.length - 1);
+                                }
+                                if (commonPrefix.length === 0) break;
+                            }
+                            
+                            if (commonPrefix.length > lastPart.length) {
+                                parts[parts.length - 1] = commonPrefix;
+                                terminalInput.value = parts.join(' ');
+                            }
+                        }
+                    }
+                }
+                // Handle Arrow Up - Previous command in history
+                else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (commandHistory.length > 0 && historyPosition > 0) {
+                        historyPosition--;
+                        terminalInput.value = commandHistory[historyPosition];
+                    }
+                }
+                // Handle Arrow Down - Next command in history
+                else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (historyPosition < commandHistory.length - 1) {
+                        historyPosition++;
+                        terminalInput.value = commandHistory[historyPosition];
+                    } else if (historyPosition === commandHistory.length - 1) {
+                        // Clear input when reaching the end of history
+                        historyPosition = commandHistory.length;
+                        terminalInput.value = '';
+                    }
+                }
+            });
+            
+            // Helper function to print to terminal
+            function printToTerminal(text) {
+                const output = document.createElement('div');
+                output.innerHTML = text;
+                terminalOutput.appendChild(output);
+                
+                // Add spacing
+                const spacer = document.createElement('div');
+                spacer.classList.add('terminal-spacer');
+                terminalOutput.appendChild(spacer);
+            }
+            
+            // Helper functions for CV data display
+            function displaySkills() {
+                let output = currentLanguage === 'en' ? "## Technical Skills\n\n" : "## Compétences Techniques\n\n";
+                
+                cvData.skills.forEach(category => {
+                    output += `### ${category.category}\n`;
+                    category.items.forEach(skill => {
+                        output += `- ${skill}\n`;
+                    });
+                    output += "\n";
+                });
+                
+                return output;
+            }
+            
+            function displaySoftSkills() {
+                let output = currentLanguage === 'en' ? "## Soft Skills\n\n" : "## Compétences Personnelles\n\n";
+                
+                cvData.softSkills.forEach(skill => {
+                    output += `- ${skill}\n`;
+                });
+                
+                return output;
+            }
+            
+            function displayLanguages() {
+                let output = currentLanguage === 'en' ? "## Languages\n\n" : "## Langues\n\n";
+                
+                cvData.languages.forEach(lang => {
+                    output += `- ${lang.language}: ${lang.level}\n`;
+                });
+                
+                return output;
+            }
+            
+            function displayExperience() {
+                let output = currentLanguage === 'en' ? "## Work Experience\n\n" : "## Expérience Professionnelle\n\n";
+                
+                cvData.experience.forEach(job => {
+                    output += `### ${job.title}\n`;
+                    output += `${job.period} | ${job.location}\n\n`;
+                    
+                    job.highlights.forEach(highlight => {
+                        output += `• ${highlight}\n`;
+                    });
+                    
+                    output += "\n";
+                });
+                
+                return output;
+            }
+            
+            function displayProjects() {
+                let output = currentLanguage === 'en' ? "## Personal Projects\n\n" : "## Projets Personnels\n\n";
+                
+                cvData.projects.forEach(project => {
+                    output += `### ${project.name}\n`;
+                    output += `${project.description}\n`;
+                    output += `GitHub: ${project.github}\n\n`;
+                });
+                
+                return output;
+            }
+            
+            function displayEducation() {
+                let output = currentLanguage === 'en' ? "## Education\n\n" : "## Formation\n\n";
+                
+                cvData.education.forEach(edu => {
+                    output += `### ${edu.degree}\n`;
+                    if (edu.institution) {
+                        output += `${edu.institution}\n`;
+                    }
+                    output += `${edu.period}`;
+                    if (edu.location) {
+                        output += ` | ${edu.location}`;
+                    }
+                    output += "\n\n";
+                    
+                    edu.highlights.forEach(highlight => {
+                        output += `• ${highlight}\n`;
+                    });
+                    
+                    output += "\n";
+                });
+                
+                return output;
+            }
         });
     </script>
 </body>
