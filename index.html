@@ -381,12 +381,12 @@
             const commands = {
                 help: function() {
                     return currentLanguage === 'en' ? 
-                    `Available commands:
+                    `<pre style="font-family:monospace; margin:0; font-size:inherit; color:inherit; background:transparent;">Available commands:
   help                  Display this help message
   clear                 Clear the terminal
   ls                    List available categories
-  cat <file>            Display content of a file (experience, skills, projects)
-  find <keyword>        Search for a keyword in the CV
+  cat &lt;file&gt;            Display content of a file (experience, skills, projects)
+  find &lt;keyword&gt;        Search for a keyword in the CV
   whoami                Display basic info about Julien Mayer
   scan [target]         Run a simulated security scan on a target (default: all)
   deploy [app]          Deploy an application to Kubernetes cluster (demo)
@@ -399,13 +399,13 @@
   summary               Show my professional summary
   fr / en               Switch language to French / English
   snake                 Play a game of Snake in the terminal
-  exit                  Close the terminal` :
-                    `Commandes disponibles:
+  exit                  Close the terminal</pre>` :
+                    `<pre style="font-family:monospace; margin:0; font-size:inherit; color:inherit; background:transparent;">Commandes disponibles:
   help                  Afficher ce message d'aide
   clear                 Effacer le terminal
   ls                    Lister les catégories disponibles
-  cat <fichier>         Afficher le contenu d'un fichier (experience, skills, projects)
-  find <mot-clé>        Rechercher un mot-clé dans le CV
+  cat &lt;fichier&gt;         Afficher le contenu d'un fichier (experience, skills, projects)
+  find &lt;mot-clé&gt;        Rechercher un mot-clé dans le CV
   whoami                Afficher les informations de base sur Julien Mayer
   scan [cible]          Exécuter un scan de sécurité simulé sur une cible (par défaut: all)
   deploy [app]          Déployer une application sur un cluster Kubernetes (démo)
@@ -418,7 +418,7 @@
   resume                Afficher mon résumé professionnel
   fr / en               Changer la langue en français / anglais
   snake                 Jouer au jeu Snake dans le terminal
-  exit                  Fermer le terminal`;
+  exit                  Fermer le terminal</pre>`;
                 },
                 ls: function() {
                     return currentLanguage === 'en' ?
