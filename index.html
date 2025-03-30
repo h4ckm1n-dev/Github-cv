@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Julien Mayer - DevOps Engineer</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABILAAASCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A">
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -129,6 +130,8 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             position: relative;
             overflow: hidden;
+            text-decoration: none;
+            margin-bottom: 10px;
         }
         
         .terminal-button-prominent:hover {
@@ -144,6 +147,10 @@
         
         .terminal-button-prominent .fas {
             color: #a6e3a1;
+        }
+
+        .terminal-button-prominent .fa-file-pdf {
+            color: #f38ba8;
         }
         
         .terminal-button-prominent::after {
@@ -318,6 +325,16 @@
             font-family: "Font Awesome 6 Free";
         }
         
+        .file-pdf {
+            color: #f38ba8;
+            font-weight: 500;
+        }
+        
+        .file-pdf::before {
+            content: "󰈦 ";
+            font-family: "Font Awesome 6 Free";
+        }
+        
         .file-dir {
             color: #89b4fa;
             font-weight: 500;
@@ -444,165 +461,35 @@
             border-left: 3px solid #89b4fa;
         }
         
-        /* Additional CSS for terminal size */
-        const style = document.createElement('style');
-        style.textContent = `
-        #terminal-container {
-            width: 85% !important;
-            height: 80% !important;
-            max-width: 1200px !important;
-            background-color: #1e1e2e;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            animation: terminal-appear 0.3s ease-out;
-            font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+        /* Container for button group */
+        .terminal-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 15px;
         }
         
-        #snake-game {
-            width: 100%;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
+        /* Download button animation */
+        @keyframes pulse-download {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
-        /* Responsive styles for terminal */
-        @media (max-width: 1200px) {
-            #terminal-container {
-                width: 90% !important;
-                height: 85% !important;
-            }
+        .terminal-button-prominent.download-button:hover {
+            animation: pulse-download 1s infinite;
         }
-        
-        @media (max-width: 992px) {
-            #terminal-container {
-                width: 92% !important;
-                max-width: none !important;
-            }
-            
-            #terminal-header .control-buttons {
-                width: 70px;
-            }
-            
-            #snake-game {
-                max-width: 600px !important;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            #terminal-container {
-                width: 95% !important;
-                height: 90% !important;
-                border-radius: 8px;
-            }
-            
-            #terminal-header span {
-                font-size: 0.8rem;
-            }
-            
-            #terminal-output, #terminal-input {
-                font-size: 0.85rem;
-            }
-            
-            .command-section {
-                font-size: 1rem;
-            }
-            
-            #snake-game {
-                max-width: 450px !important;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            #terminal-container {
-                width: 98% !important;
-                height: 95% !important;
-                border-radius: 6px;
-            }
-            
-            #terminal-header {
-                padding: 8px 12px;
-            }
-            
-            #terminal-header span {
-                font-size: 0.75rem;
-            }
-            
-            #terminal-output, #terminal-input {
-                font-size: 0.8rem;
-                padding: 8px;
-            }
-            
-            .prompt {
-                font-size: 0.75rem;
-            }
-            
-            #terminal-input-line {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            
-            #snake-game {
-                max-width: 300px !important;
-            }
-            
-            .tab-hint {
-                display: none;
-            }
-            
-            /* Adjust command output for better mobile reading */
-            .file-json, .file-txt, .file-dir {
-                display: block;
-                margin-bottom: 3px;
-            }
-            
-            /* Condensed help display for mobile */
-            .command-section {
-                font-size: 0.9rem;
-                margin: 10px 0 5px;
-            }
-            
-            /* Adjust badges for mobile */
-            .badge {
-                padding: 2px 4px;
-                font-size: 0.7rem;
-            }
-        }
-        
-        /* Special adjustments for very small screens */
-        @media (max-width: 375px) {
-            #terminal-output, #terminal-input {
-                font-size: 0.75rem;
-                padding: 6px;
-            }
-            
-            #terminal-header .control-buttons {
-                width: 50px;
-            }
-            
-            #terminal-header span {
-                font-size: 0.7rem;
-            }
-            
-            #snake-game {
-                max-width: 250px !important;
-            }
-            
-            /* Simplify snake game UI for very small screens */
-            #snake-game div:not(:first-child) {
-                transform: scale(0.9);
-            }
-        }
-        `;
-        document.head.appendChild(style);
     </style>
 </head>
 <body>
     <div class="container">
         <header>
             <div class="language-toggle">
-                <button id="toggleLanguage" onclick="toggleLanguage()">
+                <a href="CV_Mayer_Julien.pdf" download class="language-toggle-btn">
+                    <i class="fas fa-file-pdf"></i> <span data-en="Download CV" data-fr="Télécharger CV">Download CV</span>
+                </a>
+                <button id="toggleLanguage" onclick="toggleLanguage()" class="language-toggle-btn">
                     <span class="lang-en">🇫🇷 Passer en Français</span>
                     <span class="lang-fr">🇬🇧 Switch to English</span>
                 </button>
@@ -622,9 +509,11 @@
                 <a href="https://www.linkedin.com/in/julien-mayer-32850b75/" target="_blank"><i class="fab fa-linkedin"></i> LinkedIn</a>
             </div>
             <div class="terminal-section">
-                <button id="openTerminal" class="terminal-button-prominent">
-                    <i class="fas fa-terminal"></i> <span data-en="Explore my CV via Terminal" data-fr="Explorer mon CV via Terminal">Explore my CV via Terminal</span>
-                </button>
+                <div class="terminal-buttons">
+                    <button id="openTerminal" class="terminal-button-prominent">
+                        <i class="fas fa-terminal"></i> <span data-en="Explore my CV via Terminal" data-fr="Explorer mon CV via Terminal">Explore my CV via Terminal</span>
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -821,6 +710,187 @@
             document.querySelectorAll('.lang-fr').forEach(el => {
                 el.style.display = 'none';
             });
+            
+            // Appliquer les styles responsifs pour le terminal et le jeu snake
+            const terminalResponsiveStyles = document.createElement('style');
+            terminalResponsiveStyles.textContent = `
+            #terminal-container {
+                width: 85% !important;
+                height: 80% !important;
+                max-width: 1200px !important;
+                background-color: #1e1e2e;
+                border-radius: 12px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+                overflow: hidden;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                animation: terminal-appear 0.3s ease-out;
+                font-family: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+            }
+            
+            #snake-game {
+                width: 100%;
+                max-width: 800px;
+                margin: 0 auto;
+                text-align: center;
+            }
+            
+            /* Responsive styles for terminal */
+            @media (max-width: 1200px) {
+                #terminal-container {
+                    width: 90% !important;
+                    height: 85% !important;
+                }
+            }
+            
+            @media (max-width: 992px) {
+                #terminal-container {
+                    width: 92% !important;
+                    max-width: none !important;
+                }
+                
+                #terminal-header .control-buttons {
+                    width: 70px;
+                }
+                
+                #snake-game {
+                    max-width: 600px !important;
+                }
+            }
+            
+            @media (max-width: 768px) {
+                #terminal-container {
+                    width: 95% !important;
+                    height: 90% !important;
+                    border-radius: 8px;
+                }
+                
+                #terminal-header span {
+                    font-size: 0.8rem;
+                }
+                
+                #terminal-output, #terminal-input {
+                    font-size: 0.85rem;
+                }
+                
+                .command-section {
+                    font-size: 1rem;
+                }
+                
+                #snake-game {
+                    max-width: 450px !important;
+                }
+                
+                .terminal-buttons {
+                    flex-direction: column;
+                    align-items: center;
+                }
+                
+                .terminal-button-prominent {
+                    width: 90%;
+                    justify-content: center;
+                }
+            }
+            
+            @media (max-width: 576px) {
+                #terminal-container {
+                    width: 98% !important;
+                    height: 95% !important;
+                    border-radius: 6px;
+                }
+                
+                #terminal-header {
+                    padding: 8px 12px;
+                }
+                
+                #terminal-header span {
+                    font-size: 0.75rem;
+                }
+                
+                #terminal-output, #terminal-input {
+                    font-size: 0.8rem;
+                    padding: 8px;
+                }
+                
+                .prompt {
+                    font-size: 0.75rem;
+                }
+                
+                #terminal-input-line {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                
+                #snake-game {
+                    max-width: 300px !important;
+                }
+                
+                .tab-hint {
+                    display: none;
+                }
+                
+                /* Adjust command output for better mobile reading */
+                .file-json, .file-txt, .file-dir {
+                    display: block;
+                    margin-bottom: 3px;
+                }
+                
+                /* Condensed help display for mobile */
+                .command-section {
+                    font-size: 0.9rem;
+                    margin: 10px 0 5px;
+                }
+                
+                /* Adjust badges for mobile */
+                .badge {
+                    padding: 2px 4px;
+                    font-size: 0.7rem;
+                }
+            }
+            
+            /* Special adjustments for very small screens */
+            @media (max-width: 375px) {
+                #terminal-output, #terminal-input {
+                    font-size: 0.75rem;
+                    padding: 6px;
+                }
+                
+                #terminal-header .control-buttons {
+                    width: 50px;
+                }
+                
+                #terminal-header span {
+                    font-size: 0.7rem;
+                }
+                
+                #snake-game {
+                    max-width: 250px !important;
+                }
+                
+                /* Simplify snake game UI for very small screens */
+                #snake-game div:not(:first-child) {
+                    transform: scale(0.9);
+                }
+                
+                .terminal-button-prominent {
+                    width: 100%;
+                    padding: 8px 12px;
+                    font-size: 14px;
+                }
+            }
+            `;
+            document.head.appendChild(terminalResponsiveStyles);
+            
+            // Ajouter une animation simple au bouton de téléchargement
+            const downloadButton = document.querySelector('.download-button');
+            if (downloadButton) {
+                downloadButton.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+                
+                downloadButton.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            }
         });
 
         // Terminal functionality
@@ -855,7 +925,7 @@
             // Commandes communes aux deux langues
             const commonCommands = [
                 'help', 'clear', 'ls', 'cat', 'find', 'whoami', 'scan', 'deploy',
-                'exit', 'snake'
+                'exit', 'snake', 'download'
             ];
             
             // Commandes spécifiques à l'anglais
@@ -995,6 +1065,7 @@
   <span class="success">ls</span> - List available files
   <span class="success">cat [filename]</span> - View file contents
   <span class="success">find [term]</span> - Search in CV content
+  <span class="success">download</span> - Download my complete CV as PDF
 
 <div class="command-section"><i class="fas fa-user"></i> CV Information</div>
   <span class="success">whoami</span> - Display information about me
@@ -1027,6 +1098,7 @@
   <span class="success">ls</span> - Lister les fichiers disponibles
   <span class="success">cat [nom_fichier]</span> - Voir le contenu d'un fichier
   <span class="success">find [terme]</span> - Rechercher dans le contenu du CV
+  <span class="success">download</span> - Télécharger mon CV complet en PDF
 
 <div class="command-section"><i class="fas fa-user"></i> Informations CV</div>
   <span class="success">whoami</span> - Afficher des informations sur moi
@@ -1058,6 +1130,7 @@
 <span class="file-txt">summary.txt</span>
 <span class="file-txt">contact.txt</span>
 <span class="file-txt">scan_targets.txt</span>
+<span class="file-pdf">CV_Mayer_Julien.pdf</span>
 <span class="file-dir">deployments/</span>`;
                 },
                 cat: function(args) {
@@ -1539,6 +1612,46 @@ LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
                     }, 100);
                     
                     return message;
+                },
+                download: function() {
+                    // Créer un élément a invisible et déclencher le téléchargement
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = 'CV_Mayer_Julien.pdf';
+                    downloadLink.download = 'CV_Mayer_Julien.pdf';
+                    downloadLink.style.display = 'none';
+                    document.body.appendChild(downloadLink);
+                    
+                    // Animation de téléchargement
+                    let progress = 0;
+                    const progressBarHTML = `<div class="progress-bar"><div class="progress-bar-fill" id="download-progress"></div></div>`;
+                    printToTerminal(`<span class="info">[*] ${currentLanguage === 'en' ? 'Preparing CV file for download...' : 'Préparation du fichier CV pour téléchargement...'}</span>`);
+                    printToTerminal(progressBarHTML);
+                    
+                    const progressBar = document.getElementById('download-progress');
+                    if (progressBar) {
+                        const interval = setInterval(() => {
+                            progress += 5;
+                            progressBar.style.width = `${progress}%`;
+                            
+                            if (progress >= 100) {
+                                clearInterval(interval);
+                                
+                                // Une fois l'animation terminée, déclencher le téléchargement
+                                setTimeout(() => {
+                                    downloadLink.click();
+                                    document.body.removeChild(downloadLink);
+                                    
+                                    if (currentLanguage === 'en') {
+                                        printToTerminal(`<span class="success">[+] Download initiated successfully! CV_Mayer_Julien.pdf will be saved to your downloads folder.</span>`);
+                                    } else {
+                                        printToTerminal(`<span class="success">[+] Téléchargement lancé avec succès ! CV_Mayer_Julien.pdf sera enregistré dans votre dossier de téléchargements.</span>`);
+                                    }
+                                }, 500);
+                            }
+                        }, 50);
+                    }
+                    
+                    return currentLanguage === 'en' ? "Initiating CV download process..." : "Lancement du processus de téléchargement du CV...";
                 }
             };
             
@@ -1824,6 +1937,7 @@ Type <span style="color: #729fcf;">help</span> to see available commands. Press 
                     tapHint.remove();
                 }
             });
+            
             
             // Close terminal
             closeTerminalBtn.addEventListener('click', function() {

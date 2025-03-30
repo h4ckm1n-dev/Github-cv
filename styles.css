@@ -428,6 +428,35 @@ section:nth-child(6) {
     top: 20px;
     right: 20px;
     z-index: 100;
+    display: flex;
+    gap: 10px;
+}
+
+.language-toggle-btn {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    text-decoration: none;
+}
+
+.language-toggle-btn:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    color: white;
+}
+
+.language-toggle-btn i {
+    margin-right: 8px;
 }
 
 #toggleLanguage {
@@ -443,16 +472,6 @@ section:nth-child(6) {
     align-items: center;
     transition: all 0.3s ease;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-}
-
-#toggleLanguage:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-}
-
-#toggleLanguage i {
-    margin-left: 8px;
 }
 
 .lang-en, .lang-fr {
@@ -547,8 +566,10 @@ section:hover {
     .language-toggle {
         top: 10px;
         right: 10px;
+        flex-direction: column;
     }
     
+    .language-toggle-btn, 
     #toggleLanguage {
         padding: 5px 10px;
         font-size: 12px;
