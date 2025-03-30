@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Julien Mayer - DevOps Engineer</title>
-    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAABILAAASCwAAAAAAAAAAAAD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A////AP///wD///8A">
+    <link rel="icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZmlsbD0iIzZmNzJmZiIgZD0iTTExLjUsMjJDMTEuNSwyMiAxNywyMS43NSAxNywxOVYxNy41SDEyVjE2LjI1SDEzLjVDMTUuNSwxNi4yNSAxNi43NSwxNi4yNSAxNi43NSwxMy4yNUwxNyw4TDEzLjk3LDEySDEyTDExLDExSDEwLjVDOC41LDExIDYuNSwxMyA2LjUsMTZDNi41LDE5LjUgOS41LDIyIDExLjUsMjJNMTIsMy41QzEyLDMuNSAxMi41LDMuNSAxMywzLjVMMTQsMy43NUwxNCwzLjVWNkMxNCw2IDE2Ljc1LDcuNSAxNi43NSw5Ljc1QzE2Ljc1LDEyIDE1LjI1LDEwLjUgMTUuMjUsMTIuNUMxNS4yNSwxMyAxNS41LDE0LjI1IDE0LDE0LjVIMTNDMTMsMTQgMTQsMTEuNSAxNCwxMC41QzE0LDkuNSAxMy41LDkuNzUgMTMuNSwxMC41TDEzLDExLjVDMTMsMTEuNSAxMi41LDEwLjUgMTIuNSwxMC41QzEyLjUsMTAuNSAxMSwxMS41IDEwLDEyLjI1QzksMTMgOSwxMy41IDksMTRDOSwxNS41IDEwLjI1LDE0LjUgMTEsMTRDMTEuNzUsMTMuNSAxMiwxMy41IDEyLDEzLjVWMTUuNzVDMTIsMTUuNzUgOSwxNS43NSA5LDEzVjExLjVDOSwxMS41IDcsMTEuNSA3LDlMOSw1QzkuNSw0LjUgMTAuNSwzLjUgMTIsMy41TTkuNSw3LjVBMSwxIDAgMCwxIDEwLjUsOC41QTEsMSAwIDAsMSA5LjUsOS41QTEsMSAwIDAsMSA4LjUsOC41QTEsMSAwIDAsMSA5LjUsNy41Wk0xNi41LDEwQTEsMSAwIDAsMSAxNy41LDExQTEsMSAwIDAsMSAxNi41LDEyQTEsMSAwIDAsMSAxNS41LDExQTEsMSAwIDAsMSAxNi41LDEwWiIgLz48L3N2Zz4=">
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -892,6 +892,8 @@
                     this.style.transform = 'scale(1)';
                 });
             }
+            
+            // Le code d'ouverture automatique du terminal a été supprimé ici
         });
 
         // Terminal functionality
@@ -1910,6 +1912,17 @@ LinkedIn: https://www.linkedin.com/in/julien-mayer-32850b75/`;
 Type <span style="color: #729fcf;">help</span> to see available commands. Press <span class="badge badge-info">Tab</span> for autocompletion.
 `);
                     console.log("Terminal opened successfully");
+                    
+                    // Exécuter automatiquement la commande "help"
+                    setTimeout(() => {
+                        // Simuler la commande help
+                        printToTerminal(`<span class="prompt">visitor@jmayer-cv:~$</span> help`);
+                        printToTerminal(commands.help());
+                        
+                        // Faire défiler vers le bas pour voir le résultat
+                        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+                    }, 100);
+                    
                 } catch (error) {
                     console.error("Error opening terminal:", error);
                     alert("Une erreur s'est produite lors de l'ouverture du terminal. Veuillez consulter la console pour plus de détails.");
