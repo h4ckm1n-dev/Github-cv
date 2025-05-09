@@ -480,6 +480,31 @@
         .terminal-button-prominent.download-button:hover {
             animation: pulse-download 1s infinite;
         }
+        
+        .summary-content {
+            background: linear-gradient(to right, rgba(43, 43, 64, 0.7), rgba(30, 30, 46, 0.7));
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            border-left: 4px solid #6f72ff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        
+        .summary-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .summary-content p:last-child {
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .summary-content {
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -520,8 +545,16 @@
 
         <section id="summary">
             <h2 data-en="Professional Summary" data-fr="Résumé Professionnel">Professional Summary</h2>
-            <p data-en="DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies." 
-               data-fr="Ingénieur DevOps avec une forte expertise en automatisation, sécurité et gestion d'infrastructures cloud-native. Maîtrise de Docker, Kubernetes, ArgoCD, CI/CD, outils de surveillance (Grafana, Loki) et de sécurité (Trivy, Kyverno). Passionné par l'optimisation des workflows DevOps et l'implémentation des meilleures pratiques DevOps pour garantir des déploiements efficaces et sécurisés. Professionnel autodidacte avec un parcours prouvé d'apprentissage continu et d'implémentation de technologies de pointe.">DevOps Engineer with strong expertise in automation, security, and cloud-native infrastructure management. Proficient in Docker, Kubernetes, ArgoCD, CI/CD, monitoring (Grafana, Loki), and security tools (Trivy, Kyverno). Passionate about optimizing DevOps workflows and implementing DevOps best practices to ensure efficient and secure deployments. Self-taught professional with a proven track record of continuous learning and implementation of cutting-edge technologies.</p>
+            <div class="summary-content">
+                <p data-en="Full-stack developer with a strong DevOps and systems engineering background, blending infrastructure automation, backend architecture, and modern web development. Expert in designing secure, scalable applications using Kubernetes, Docker, Ansible, and CI/CD pipelines, while also building sophisticated frontend interfaces in React, Tailwind, and Next.js." 
+                   data-fr="Développeur full-stack avec une solide expérience en DevOps et en ingénierie système, alliant automatisation d'infrastructure, architecture backend et développement web moderne. Expert dans la conception d'applications sécurisées et évolutives utilisant Kubernetes, Docker, Ansible et des pipelines CI/CD, tout en construisant des interfaces frontend sophistiquées avec React, Tailwind et Next.js.">Full-stack developer with a strong DevOps and systems engineering background, blending infrastructure automation, backend architecture, and modern web development. Expert in designing secure, scalable applications using Kubernetes, Docker, Ansible, and CI/CD pipelines, while also building sophisticated frontend interfaces in React, Tailwind, and Next.js.</p>
+                
+                <p data-en="Hands-on with blockchain technologies, smart contract development (Rust, Solana), and API integration in Web3 environments. Skilled in deploying observability stacks (Grafana, Prometheus, Loki), enforcing security policies (Kyverno, Trivy), and implementing GitOps workflows with ArgoCD." 
+                   data-fr="Expérience pratique des technologies blockchain, du développement de smart contracts (Rust, Solana) et de l'intégration d'API dans des environnements Web3. Compétent dans le déploiement de stacks d'observabilité (Grafana, Prometheus, Loki), l'application de politiques de sécurité (Kyverno, Trivy) et l'implémentation de workflows GitOps avec ArgoCD.">Hands-on with blockchain technologies, smart contract development (Rust, Solana), and API integration in Web3 environments. Skilled in deploying observability stacks (Grafana, Prometheus, Loki), enforcing security policies (Kyverno, Trivy), and implementing GitOps workflows with ArgoCD.</p>
+                
+                <p data-en="Self-taught, resilient, and pragmatic, I design and deliver end-to-end platforms—from the UI down to the container runtime—with a keen focus on performance, automation, and maintainability." 
+                   data-fr="Autodidacte, résilient et pragmatique, je conçois et livre des plateformes de bout en bout—de l'interface utilisateur jusqu'au runtime des conteneurs—avec une attention particulière à la performance, l'automatisation et la maintenabilité.">Self-taught, resilient, and pragmatic, I design and deliver end-to-end platforms—from the UI down to the container runtime—with a keen focus on performance, automation, and maintainability.</p>
+            </div>
         </section>
 
         <section id="experience">
@@ -569,6 +602,34 @@
             <h2 data-en="Technical Skills" data-fr="Compétences Techniques">Technical Skills</h2>
             <div class="skills-container">
                 <div class="skill-category">
+                    <h3 data-en="Frontend" data-fr="Frontend"><i class="fas fa-code"></i> Frontend</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">React</span>
+                        <span class="skill-tag">Next.js</span>
+                        <span class="skill-tag">Tailwind CSS</span>
+                        <span class="skill-tag">Zustand</span>
+                        <span class="skill-tag">Recharts</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 data-en="Backend & Blockchain" data-fr="Backend & Blockchain"><i class="fas fa-server"></i> Backend & Blockchain</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Rust</span>
+                        <span class="skill-tag">Solana</span>
+                        <span class="skill-tag">Anchor</span>
+                        <span class="skill-tag">Node.js</span>
+                    </div>
+                </div>
+                <div class="skill-category">
+                    <h3 data-en="Web3 & APIs" data-fr="Web3 & APIs"><i class="fas fa-link"></i> Web3 & APIs</h3>
+                    <div class="skill-tags">
+                        <span class="skill-tag">Raydium</span>
+                        <span class="skill-tag">Jupiter Aggregator</span>
+                        <span class="skill-tag">Birdeye API</span>
+                        <span class="skill-tag">Wallet Adapter</span>
+                    </div>
+                </div>
+                <div class="skill-category">
                     <h3 data-en="Containers & Orchestration" data-fr="Conteneurs & Orchestration"><i class="fas fa-cube"></i> Containers & Orchestration</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Docker</span>
@@ -581,20 +642,21 @@
                     <h3 data-en="CI/CD & Automation" data-fr="CI/CD & Automatisation"><i class="fas fa-code-branch"></i> CI/CD & Automation</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">GitLab CI</span>
+                        <span class="skill-tag">GitHub Actions</span>
+                        <span class="skill-tag">Renovate</span>
                         <span class="skill-tag">Ansible</span>
                         <span class="skill-tag">Bash</span>
                         <span class="skill-tag">Python</span>
-                        <span class="skill-tag">GitHub Actions</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3 data-en="Security" data-fr="Sécurité"><i class="fas fa-shield-alt"></i> Security</h3>
+                    <h3 data-en="Security & DevSecOps" data-fr="Sécurité & DevSecOps"><i class="fas fa-shield-alt"></i> Security & DevSecOps</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Trivy</span>
                         <span class="skill-tag">Kyverno</span>
-                        <span class="skill-tag">SAST/DAST</span>
                         <span class="skill-tag">OPA</span>
-                        <span class="skill-tag" data-en="Vulnerability Management" data-fr="Gestion des Vulnérabilités">Vulnerability Management</span>
+                        <span class="skill-tag">SAST/DAST</span>
+                        <span class="skill-tag">Smart contract audit</span>
                     </div>
                 </div>
                 <div class="skill-category">
@@ -607,21 +669,21 @@
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3 data-en="Cloud & Infrastructure" data-fr="Cloud & Infrastructure"><i class="fas fa-cloud"></i> Cloud & Infrastructure</h3>
+                    <h3 data-en="Cloud & Infra as Code" data-fr="Cloud & Infrastructure as Code"><i class="fas fa-cloud"></i> Cloud & Infra as Code</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">Linux</span>
                         <span class="skill-tag">Terraform</span>
                         <span class="skill-tag">AWS</span>
-                        <span class="skill-tag">Azure</span>
                         <span class="skill-tag">GCP</span>
+                        <span class="skill-tag">Azure</span>
                     </div>
                 </div>
                 <div class="skill-category">
-                    <h3 data-en="Version Control & Deployments" data-fr="Gestion de Versions & Déploiements"><i class="fas fa-code-branch"></i> Version Control & Deployments</h3>
+                    <h3 data-en="Development Practices" data-fr="Pratiques de Développement"><i class="fas fa-laptop-code"></i> Development Practices</h3>
                     <div class="skill-tags">
                         <span class="skill-tag">GitOps</span>
-                        <span class="skill-tag">Renovate</span>
-                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">TDD</span>
+                        <span class="skill-tag">Clean Architecture</span>
                     </div>
                 </div>
             </div>
